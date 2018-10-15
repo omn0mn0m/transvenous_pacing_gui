@@ -12,7 +12,7 @@
    <children>
       <Button id="myButton" fx:id="myButton" layoutX="197.0" layoutY="14.0" mnemonicParsing="false" onAction="#showDateTime" text="Button" />
       <TextField id="myTextField" fx:id="myTextField" layoutX="14.0" layoutY="14.0" />
-      <LineChart layoutX="103.0" layoutY="129.0" prefHeight="359.0" prefWidth="464.0">
+      <LineChart layoutX="205.0" layoutY="189.0">
         <xAxis>
           <CategoryAxis side="BOTTOM" />
         </xAxis>
