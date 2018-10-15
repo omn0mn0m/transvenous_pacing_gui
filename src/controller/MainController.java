@@ -1,4 +1,4 @@
-package application;
+package controller;
 
 import java.net.URL;
 import java.text.DateFormat;
@@ -12,7 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class MyController implements Initializable {
+public class MainController implements Initializable {
 
    @FXML
    private Button myButton;
