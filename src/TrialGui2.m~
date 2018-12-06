@@ -162,7 +162,7 @@ function mra_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 Graph_CreateFcn('mra')
 
-%Superior Vena Cava
+
 function inputsvcval_Callback(hObject, eventdata, handles)
 % hObject    handle to inputsvcval (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -186,7 +186,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-%High Right Atrium
+
 function inputhraval_Callback(hObject, eventdata, handles)
 % hObject    handle to inputhraval (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -212,7 +212,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-%Mid Right Atrium
 function inputmraval_Callback(hObject, eventdata, handles)
 % hObject    handle to inputmraval (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -227,6 +226,30 @@ Graph_CreateFcn('mra',[],handles.egg)
 % --- Executes during object creation, after setting all properties.
 function inputmraval_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to inputmraval (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+function inputlraval_Callback(hObject, eventdata, handles)
+% hObject    handle to inputlraval (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of inputlraval as text
+%        str2double(get(hObject,'String')) returns contents of inputlraval as a double
+egg=str2double(get(hObject,'String'))
+handles.egg=egg
+Graph_CreateFcn('lra',[],handles.egg)
+
+% --- Executes during object creation, after setting all properties.
+function inputlraval_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to inputlraval (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
