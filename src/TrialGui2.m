@@ -52,8 +52,9 @@ function TrialGui2_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to TrialGui2 (see VARARGIN)
 
-%s = Serial('/dev/tty.usbmodem14103', 'BaudRate', 9600);
-%fopen(s);
+global s;
+s = serial('COM7', 'BaudRate', 9600);
+fopen(s);
 
 % Choose default command line output for TrialGui2
 handles.output = hObject;
@@ -83,7 +84,8 @@ function Graph_CreateFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 % Hint: place code in OpeningFcn to populate Graph
-HRValue=handles %Setting Heartrate
+HRValue=handles.HRVAL %Setting Heartrate
+POSITION=handles.POSITION
 x=[1:10];
 y=[5,5,5,5,5,5,5,5,5,5];
 %z=0;
@@ -102,12 +104,15 @@ y=[5,5,5,5,5,5,5,5,5,5];
 % end
 % end
 %end
+if POSITION=='1'
+    [x,y]=highRA_v2(HRValue)
+end
 for i=1:length(x) 
     plot(x(1:i),y(1:i),'k','LineWidth',4);
     xlabel('Time (s)')
     ylabel('Amplitude (mA)')
     grid on
-    set(gca,'Xlim',[1 10],'Ylim',[1 10]);
+    %set(gca,'Xlim',[1 10],'Ylim',[1 10]);
     pause(0.1)
 end
 title('ECG')
@@ -125,11 +130,15 @@ function HRVal_Callback(hObject, eventdata, handles)
 HRVAL=str2double(get(hObject,'String'));
 handles.HRVAL=HRVAL;
 
+handles.POSITION = '0';
+
+global s;
+
 if (s.BytesAvailable >= 1)
-    temp = fscanf(s, '%c', 1)
+    handles.POSITION = fscanf(s, '%c', 1)
 end
 
-Graph_CreateFcn([],[],handles.HRVAL);
+Graph_CreateFcn([],[],handles);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -149,8 +158,10 @@ function quitbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to quitbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+if ~isempty(instrfind)
+    fclose(instrfind);
+    delete(instrfind);
+end
+
 close(TrialGui2);
-% if ~isempty(instrfind)
-%     fclose(instrfind);
-%     delete(instrfind);
-% end
