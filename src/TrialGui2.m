@@ -22,7 +22,7 @@ function varargout = TrialGui2(varargin)
 
 % Edit the above text to modify the response to help TrialGui2
 
-% Last Modified by GUIDE v2.5 06-Nov-2018 14:26:00
+% Last Modified by GUIDE v2.5 08-Dec-2018 19:12:46
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -43,7 +43,7 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-
+%% Our Code
 % --- Executes just before TrialGui2 is made visible.
 function TrialGui2_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
@@ -51,6 +51,9 @@ function TrialGui2_OpeningFcn(hObject, eventdata, handles, varargin)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to TrialGui2 (see VARARGIN)
+
+%s = Serial('/dev/tty.usbmodem14103', 'BaudRate', 9600);
+%fopen(s);
 
 % Choose default command line output for TrialGui2
 handles.output = hObject;
@@ -73,110 +76,65 @@ function varargout = TrialGui2_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-
+%% Graph
 % --- Executes during object creation, after setting all properties.
 function Graph_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to Graph (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 % Hint: place code in OpeningFcn to populate Graph
-x=0.01:0.01:2;
-y=0; %initializing
-val=handles
-if strcmp(hObject,'svc')==1
-    y=ecgsvc(val);
-elseif strcmp(hObject,'hra')==1
-    [x,y]=highRA_v2(val);
-    x=x;
-    y=y;
-elseif strcmp(hObject,'mra')==1
-    [x,y]=midRA_v2(val);
-    x=x;
-    y=y;
-elseif strcmp(hObject,'lra')==1
-    [x,y]=lowRA_v2(val);
-    x=x;
-    y=y;
-elseif strcmp(hObject,'hrv')==1
-    y=ecghrv(val);
-elseif strcmp(hObject,'mrv')==1
-    y=ecgmrv(val);
-elseif strcmp(hObject,'lrv')==1
-    y=ecglrv(val);
-elseif strcmp(hObject,'pa')==1
-    y=ecgpa(val);
-elseif strcmp(hObject,'quit')==1
-    x=0;
-    y=0;
-end
-%curve=animatedline;
-grid on
+HRValue=handles %Setting Heartrate
+x=[1:10];
+y=[5,5,5,5,5,5,5,5,5,5];
 %z=0;
-yvals=y;
-xvals=x;
-if y~=0
-while strcmp(hObject,'pa')~=1
-for i=1:length(x)  
-
-plot(x(1:i),y(1:i),'k','LineWidth',4);
+%yvals=y;
+%xvals=x;
+%if y~=0
+% while strcmp(hObject,'pa')~=1
+% for i=1:length(x)  
+% 
+% plot(x(1:i),y(1:i),'k','LineWidth',4);
+%     xlabel('Time (s)')
+%     ylabel('Amplitude (mV)')
+%     grid on
+%     set(gca,'Xlim',[min(x) 2],'Ylim',[0 1]);
+%     pause(0.01)
+% end
+% end
+%end
+for i=1:length(x) 
+    plot(x(1:i),y(1:i),'k','LineWidth',4);
     xlabel('Time (s)')
-    ylabel('Amplitude (mV)')
+    ylabel('Amplitude (mA)')
     grid on
-    set(gca,'Xlim',[min(x) 2],'Ylim',[0 1]);
-    pause(0.01)
+    set(gca,'Xlim',[1 10],'Ylim',[1 10]);
+    pause(0.1)
 end
-end
-end
-xlabel('Time (s)')
-ylabel('Amplitude (mV)')
 title('ECG')
 %end
 %plot(x,y)
-%xlabel('Time (s)');
-%ylabel('Amplitude (mA)');
-%title('ECG')
 
-
-%options
-
-% --- Executes on button press in svc.
-function svc_Callback(hObject, eventdata, handles)
-% hObject    handle to svc (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-Graph_CreateFcn('svc',[],handles.egg)
-
-
-% --- Executes on button press in hra.
-function hra_Callback(hObject, eventdata, handles)
-% hObject    handle to hra (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-Graph_CreateFcn('hra')
-
-
-% --- Executes on button press in mra.
-function mra_Callback(hObject, eventdata, handles)
-% hObject    handle to mra (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-Graph_CreateFcn('mra')
-
-%Superior Vena Cava
-function inputsvcval_Callback(hObject, eventdata, handles)
-% hObject    handle to inputsvcval (see GCBO)
+%% BPM Input
+function HRVal_Callback(hObject, eventdata, handles)
+% hObject    handle to HRVal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of inputsvcval as text
-%        str2double(get(hObject,'String')) returns contents of inputsvcval as a double
-egg=str2double(get(hObject,'String'))
-handles.egg=egg
-Graph_CreateFcn('svc',[],handles.egg)
+% Hints: get(hObject,'String') returns contents of HRVal as text
+%        str2double(get(hObject,'String')) returns contents of HRVal as a double
+HRVAL=str2double(get(hObject,'String'));
+handles.HRVAL=HRVAL;
+
+if (s.BytesAvailable >= 1)
+    temp = fscanf(s, '%c', 1)
+end
+
+Graph_CreateFcn([],[],handles.HRVAL);
+
 
 % --- Executes during object creation, after setting all properties.
-function inputsvcval_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to inputsvcval (see GCBO)
+function HRVal_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to HRVal (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -186,52 +144,13 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-%High Right Atrium
-function inputhraval_Callback(hObject, eventdata, handles)
-% hObject    handle to inputhraval (see GCBO)
+%% Quit Button
+function quitbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to quitbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of inputhraval as text
-%        str2double(get(hObject,'String')) returns contents of inputhraval as a double
-egg=str2double(get(hObject,'String'))
-handles.egg=egg
-Graph_CreateFcn('hra',[],handles.egg)
-
-
-% --- Executes during object creation, after setting all properties.
-function inputhraval_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to inputhraval (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-%Mid Right Atrium
-function inputmraval_Callback(hObject, eventdata, handles)
-% hObject    handle to inputmraval (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of inputmraval as text
-%        str2double(get(hObject,'String')) returns contents of inputmraval as a double
-egg=str2double(get(hObject,'String'))
-handles.egg=egg
-Graph_CreateFcn('mra',[],handles.egg)
-
-% --- Executes during object creation, after setting all properties.
-function inputmraval_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to inputmraval (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
+close(TrialGui2);
+% if ~isempty(instrfind)
+%     fclose(instrfind);
+%     delete(instrfind);
+% end
