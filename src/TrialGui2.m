@@ -88,36 +88,33 @@ HRValue=handles.HRVAL %Setting Heartrate
 POSITION=handles.POSITION
 x=[1:10];
 y=[5,5,5,5,5,5,5,5,5,5];
-%z=0;
-%yvals=y;
-%xvals=x;
-%if y~=0
-% while strcmp(hObject,'pa')~=1
-% for i=1:length(x)  
-% 
-% plot(x(1:i),y(1:i),'k','LineWidth',4);
-%     xlabel('Time (s)')
-%     ylabel('Amplitude (mV)')
-%     grid on
-%     set(gca,'Xlim',[min(x) 2],'Ylim',[0 1]);
-%     pause(0.01)
-% end
-% end
-%end
 if POSITION=='1'
-    [x,y]=highRA_v2(HRValue)
+    [x,y]=SVC_v2_synthetic(HRValue) %Superior Vena Cava
+elseif POSITION=='2'
+    [x,y]=highRA_v2(HRValue) %High Right Atrium
+elseif POSITION=='3'
+    [x,y]=midRA_v2(HRValue) %Mid Right Atrium
+elseif POSITION=='4'
+    [x,y]=lowRA_v2(HRValue) %Low Right Atrium
+elseif POSITION=='5'
+    [x,y]=RV_v2(HRValue) %Right Ventricle
+elseif POSITION=='6'
+    [x,y]=RVwall_v2(HRValue) %Right Ventricle
+elseif POSITION=='7'
+    [x,y]=PA_v2(HRValue) %Pulmonary Artery
+elseif POSITION=='8'
+    [x,y]=IVC_v2(HRValue) %Inferior Vena Cava
 end
 for i=1:length(x) 
     plot(x(1:i),y(1:i),'k','LineWidth',4);
     xlabel('Time (s)')
     ylabel('Amplitude (mA)')
     grid on
-    %set(gca,'Xlim',[1 10],'Ylim',[1 10]);
-    pause(0.1)
+    set(gca,'Xlim',[min(x) 2],'Ylim',[0 1]);
+    pause(0.01)
 end
 title('ECG')
-%end
-%plot(x,y)
+
 
 %% BPM Input
 function HRVal_Callback(hObject, eventdata, handles)
