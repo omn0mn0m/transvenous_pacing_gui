@@ -52,15 +52,35 @@ function TrialGui2_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to TrialGui2 (see VARARGIN)
 
-global s;
-s = serial('COM7', 'BaudRate', 9600);
-fopen(s);
+close_serial;
+
+% Handle variables
+handles.s = serial('COM7', 'BaudRate', 9600);
+handles.HRVAL = 60;
+
+global POSITION;
+POSITION = '0';
+
+global RUN;
+RUN = 1;
+
+handles.s.BytesAvailableFcnCount = 1;
+handles.s.BytesAvailableFcnMode = 'byte';
+handles.s.BytesAvailableFcn = {@serial_read_Callback, handles};
+
+% handles.timer = timer(...
+%     'ExecutionMode', 'fixedRate', ...
+%     'Period', 0.5, ...
+%     'TimerFcn', {@serial_read_Callback, handles});
+% start(handles.timer);
 
 % Choose default command line output for TrialGui2
 handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
+
+fopen(handles.s);
 
 
 % UIWAIT makes TrialGui2 wait for user response (see UIRESUME)
@@ -84,36 +104,65 @@ function Graph_CreateFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 % Hint: place code in OpeningFcn to populate Graph
-HRValue=handles.HRVAL %Setting Heartrate
-POSITION=handles.POSITION
-x=[1:10];
-y=[5,5,5,5,5,5,5,5,5,5];
-if POSITION=='1'
-    [x,y]=SVC_v2_synthetic(HRValue) %Superior Vena Cava
-elseif POSITION=='2'
-    [x,y]=highRA_v2(HRValue) %High Right Atrium
-elseif POSITION=='3'
-    [x,y]=midRA_v2(HRValue) %Mid Right Atrium
-elseif POSITION=='4'
-    [x,y]=lowRA_v2(HRValue) %Low Right Atrium
-elseif POSITION=='5'
-    [x,y]=RV_v2(HRValue) %Right Ventricle
-elseif POSITION=='6'
-    [x,y]=RVwall_v2(HRValue) %Right Ventricle
-elseif POSITION=='7'
-    [x,y]=PA_v2(HRValue) %Pulmonary Artery
-elseif POSITION=='8'
-    [x,y]=IVC_v2(HRValue) %Inferior Vena Cava
+global POSITION;
+global RUN;
+
+while ~isempty(findobj('Name', 'TrialGui2'))
+    HRValue=handles.HRVAL; %Setting Heartrate
+
+    switch POSITION
+        case '0'
+            x=[0:64];
+            y=ones(64) * -0.25;
+        case '1'
+            [x,y]=SVC_v2_synthetic(HRValue); %Superior Vena Cava
+        case '2'
+            [x,y]=highRA_v2(HRValue); %High Right Atrium
+        case '3'
+            [x,y]=midRA_v2(HRValue); %Mid Right Atrium
+        case '4'
+            [x,y]=lowRA_v2(HRValue); %Low Right Atrium
+        case '5'
+            [x,y]=RV_v2(HRValue); %Right Ventricle
+        case '6'
+            [x,y]=RVwall_v2(HRValue); %Right Wall
+        case '7'
+            [x,y]=PA_v2(HRValue); %Pulmonary Artery
+        case '8'
+            [x,y]=IVC_v2(HRValue); %Inferior Vena Cava
+        otherwise
+            x=[0:64];
+            y=ones(64) * -0.25;
+    end
+
+    for i=1:length(x) 
+        plot(x(1:i),y(1:i),'k','LineWidth',3);
+        xlabel('Time (s)')
+        ylabel('Amplitude (mA)')
+        grid on
+        set(gca,'Xlim',[min(x) 2],'Ylim',[-1 0.5]);
+        pause(0.01)
+    end
+    title('ECG')
 end
-for i=1:length(x) 
-    plot(x(1:i),y(1:i),'k','LineWidth',4);
-    xlabel('Time (s)')
-    ylabel('Amplitude (mA)')
-    grid on
-    set(gca,'Xlim',[min(x) 2],'Ylim',[0 1]);
-    pause(0.01)
+
+%% Serial Read
+function serial_read_Callback(hObject, eventdata, handles)
+% hObject    handle
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of HRVal as text
+%        str2double(get(hObject,'String')) returns contents of HRVal as a double
+% handles.POSITION = '0';
+
+disp('There was a thing')
+
+global POSITION;
+
+if (handles.s.BytesAvailable >= 1)
+    POSITION = fscanf(handles.s, '%c', 1)
 end
-title('ECG')
 
 
 %% BPM Input
@@ -127,16 +176,7 @@ function HRVal_Callback(hObject, eventdata, handles)
 HRVAL=str2double(get(hObject,'String'));
 handles.HRVAL=HRVAL;
 
-handles.POSITION = '0';
-
-global s;
-
-if (s.BytesAvailable >= 1)
-    handles.POSITION = fscanf(s, '%c', 1)
-end
-
 Graph_CreateFcn([],[],handles);
-
 
 % --- Executes during object creation, after setting all properties.
 function HRVal_CreateFcn(hObject, eventdata, handles)
@@ -156,9 +196,6 @@ function quitbutton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-if ~isempty(instrfind)
-    fclose(instrfind);
-    delete(instrfind);
-end
+close_serial;
 
 close(TrialGui2);
