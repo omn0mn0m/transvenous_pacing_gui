@@ -55,7 +55,7 @@ function TrialGui2_OpeningFcn(hObject, eventdata, handles, varargin)
 close_serial;
 
 % Handle variables
-handles.s = serial('COM7', 'BaudRate', 9600);
+handles.s = serial('/dev/tty.usbmodem14203', 'BaudRate', 9600);
 handles.HRVAL = 60;
 
 global POSITION;
@@ -105,15 +105,15 @@ function Graph_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 % Hint: place code in OpeningFcn to populate Graph
 global POSITION;
-global RUN;
+global HRValue;
 
 while ~isempty(findobj('Name', 'TrialGui2'))
-    HRValue=handles.HRVAL; %Setting Heartrate
+    %HRValue=handles.HRVAL; %Setting Heartrate
 
     switch POSITION
         case '0'
             x=[0:64];
-            y=ones(64) * -0.25;
+            y=ones(64) * 1;
         case '1'
             [x,y]=SVC_v2_synthetic(HRValue); %Superior Vena Cava
         case '2'
@@ -140,7 +140,7 @@ while ~isempty(findobj('Name', 'TrialGui2'))
         xlabel('Time (s)')
         ylabel('Amplitude (mA)')
         grid on
-        set(gca,'Xlim',[min(x) 2],'Ylim',[-1 0.5]);
+        set(gca,'Xlim',[min(x) 2],'Ylim',[0 2]);
         pause(0.01)
     end
     title('ECG')
@@ -155,9 +155,6 @@ function serial_read_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of HRVal as text
 %        str2double(get(hObject,'String')) returns contents of HRVal as a double
 % handles.POSITION = '0';
-
-disp('There was a thing')
-
 global POSITION;
 
 if (handles.s.BytesAvailable >= 1)
@@ -173,8 +170,9 @@ function HRVal_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of HRVal as text
 %        str2double(get(hObject,'String')) returns contents of HRVal as a double
-HRVAL=str2double(get(hObject,'String'));
-handles.HRVAL=HRVAL;
+global HRValue;
+HRValue=str2double(get(hObject,'String'));
+%handles.HRVAL=HRVAL;
 
 Graph_CreateFcn([],[],handles);
 
