@@ -9,7 +9,7 @@ client.connect((host, port))
 message = ''
 
 while not message == 'close':
-    message = client.recv(1024)
-    print(message)
+   message = input("Enter a message to send: ").lower()
+   client.send(message.encode())
 
 client.close()

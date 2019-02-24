@@ -1,3 +1,4 @@
+# Pip Modules
 from numpy import arange, sin, pi
 import numpy as np
 
@@ -8,8 +9,17 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-import signals
+import multiprocessing
 
+# Project Modules
+import signals
+import server
+
+# Socket Connection
+out_queue = multiprocessing.Queue()
+in_queue = multiprocessing.Queue()
+
+# Take care of plotting
 fig = plt.Figure(figsize=(14, 4.5), dpi=100)
 
 [x, y] = signals.High_RA_V1(80)
@@ -42,9 +52,10 @@ def animate(i):
     
     return line,
 
+# GUI Utilisation
 root = Tk.Tk()
 
-label = Tk.Label(root,text="Simulation ECG").grid(column=0, row=0)
+Tk.Label(root,text="Simulation ECG").grid(column=0, row=0)
 
 canvas = FigureCanvasTkAgg(fig, master=root)
 canvas.get_tk_widget().grid(column=0,row=1)
