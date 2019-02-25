@@ -18,11 +18,12 @@ class Server:
         (self.connection, self.address) = self.server.accept()
         print("Connection established with client...")
 
-        self.server_thread = threading.Thread(target=self.receive_data, args=(self.connection, self.address, queue))
+        self.server_thread = threading.Thread(target=self.listen, args=(self.connection, self.address, queue))
         self.server_thread.start()
 
     def stop(self):
         print("Closing connection with client...")
+        self.server_thread.join()
         self.connection.close()
 
     def receive_data(self, connection, address, queue):
@@ -31,6 +32,13 @@ class Server:
         queue.put(message)
         
         return message
+
+    def listen(self, connection, address, queue):
+        while True:
+            message = self.receive_data(connection, address, queue)
+
+            if message == b'close':
+                break
 
 if __name__ == '__main__':
     queue = Queue()
@@ -42,10 +50,10 @@ if __name__ == '__main__':
 
     while True:
         if not queue.empty():
-            print(queue.empty())
             message = queue.get()
             print(message)
 
             if message == b'close':
-                test_server.stop()
                 break
+
+    test_server.stop()

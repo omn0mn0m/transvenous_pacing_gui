@@ -39,7 +39,12 @@ while ser.is_open:
         #data_str = ser.read(ser.inWaiting()).decode('ascii') #read bytes and convert to ASCII
         #print(data_str, end='')
     
-    #time.sleep(0.0001) #breaks for rest of code to run for 10 ms
+    #time.sleep(0.01) #breaks for rest of code to run for 10 ms, limits blocking of serial 
+#or
+    #data_str = self.read_from_queue()
+    #data_str = StringVar()
+
+    #self.after_id = master.after(10, self.update_gui, master)
     s = ser.read()
 
     print(s)
