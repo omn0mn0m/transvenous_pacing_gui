@@ -1,7 +1,4 @@
 # Pip Modules
-from numpy import arange, sin, pi
-import numpy as np
-
 import tkinter as Tk
 from tkinter import StringVar
 from tkinter import OptionMenu
