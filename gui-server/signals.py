@@ -390,3 +390,12 @@ def RV_Wall_V2(rate):
     return xx, y
 
 #RV_Wall_V2(rate)
+
+def Default_Line():
+    import matplotlib
+    import matplotlib.pyplot as plt
+    import numpy as np
+    x=[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
+    y=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+    return x,y
