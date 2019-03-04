@@ -54,11 +54,11 @@ def animate(i):
     elif position.get() == 'HRA':
         [x, y] = signals.High_RA_V1(hr.get())
     elif position.get() == 'MRA':
-        [x, y] = signals.Default_Line()
+        [x, y] = signals.Mid_RA_V1(hr.get())
     elif position.get() == 'LRA':
-        [x, y] = signals.Default_Line()
+        [x, y] = signals.Low_RA_V1(hr.get())
     elif position.get() == 'IVC':
-        [x, y] = signals.Default_Line()
+        [x, y] = signals.IVC_V1(hr.get())
     elif position.get() == 'RV':
         [x, y] = signals.Default_Line()
     elif position.get() == 'RVW':
