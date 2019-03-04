@@ -13,7 +13,7 @@ client = Client(port=911)
 master = tk.Tk("Phantom - Client")
 
 message = StringVar(master)
-host = StringVar(master)
+host = StringVar(master, value='127.0.0.1')
 
 hr = StringVar(master, value=0)
 threshold = StringVar(master, value=0)

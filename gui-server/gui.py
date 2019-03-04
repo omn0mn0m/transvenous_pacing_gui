@@ -31,6 +31,7 @@ hr = IntVar(root, value=80)
 threshold = IntVar(root, value=20)
 
 position = StringVar(root, value='RIP')
+serial_position = IntVar(root, value='-1')
 
 # Take care of plotting
 fig = plt.Figure(figsize=(14, 4.5), dpi=100)
@@ -42,28 +43,36 @@ last_x = 0
 last_x_lim = 0
 
 def animate(i):
-    # Switch statement for the serial location in order to get which one to` do
     global hr
     global threshold
     global position
+    global serial_position
     global last_x
     global last_x_lim
    
-    if position.get() == 'SVC':
+    if position.get() == 'SVC' or serial_position.get() == 1:
+        print("SVC")
         [x, y] = signals.SVC_V1(hr.get())
-    elif position.get() == 'HRA':
+    elif position.get() == 'HRA' or serial_position.get() == 2:
+        print("HRA")
         [x, y] = signals.High_RA_V1(hr.get())
-    elif position.get() == 'MRA':
+    elif position.get() == 'MRA' or serial_position.get() == 3:
+        print("MRA")
         [x, y] = signals.Mid_RA_V1(hr.get())
-    elif position.get() == 'LRA':
+    elif position.get() == 'LRA' or serial_position.get() == 4:
+        print("LRA")
         [x, y] = signals.Low_RA_V1(hr.get())
-    elif position.get() == 'IVC':
+    # elif position.get() == 'IVC' or serial_position.get() == 5:
+    #     print("IVC")
         [x, y] = signals.IVC_V1(hr.get())
-    elif position.get() == 'RV':
+    elif position.get() == 'RV' or serial_position.get() == 5:
+        print("RV")
         [x, y] = signals.RV_V1(hr.get())
-    elif position.get() == 'RVW':
+    elif position.get() == 'RVW' or serial_position.get() == 6:
+        print("RVW")
         [x, y] = signals.RV_Wall_V1(hr.get())
-    elif position.get() == 'PA':
+    # elif position.get() == 'PA' or serial_position.get() == 8:
+    #     print("PA")
         [x, y] = signals.PA_V1(hr.get())
     else:
         [x, y] = signals.Default_Line()
@@ -90,11 +99,11 @@ def change_dropdown(*args):
     try:
         choice = variable.get().split(' -')
         ser = serial.Serial(choice[0], 9600)
+        print('Connection established.')
     except SerialException as e:
         print('Error: {}'.format(e))
 
-    print('Connection established.')
-
+    
 Options=['']
 Options.extend(serial.tools.list_ports.comports())
 
@@ -129,20 +138,23 @@ def read_socket():
     root.after(10, read_socket)
 
 s = 'RIP'
+ser = None
 
 def read_serial():
     global s
+    global ser
+    global serial_position
 
     try:
-        s = ser.read()
+        if ser.in_waiting:
+            s = ser.read()
+            serial_position.set(int(s))
+            print(int(s))
+        
     except Exception as e:
         print('Error: {}'.format(e))
 
-    print(s)
-
     root.after(10, read_serial)
-
-ser = None
 
 Tk.Label(root,text="Simulation ECG").pack()
 
@@ -157,9 +169,10 @@ w.pack()
 
 variable.trace('w', change_dropdown)
 
+# ===== ECG Signal Setup
 ax = fig.add_subplot(111)
 ax.set_xlim(last_x_lim, 5)
-ax.set_ylim(-5, 5)
+ax.set_ylim(-7, 7)
 ax.set_yticklabels([])
 ax.set_xticklabels([])
 ax.xaxis.set_tick_params(width=1, top=True)
@@ -169,10 +182,13 @@ line, = ax.plot(0, 0)
 ax.get_lines()[0].set_color("xkcd:lime")
 ani = animation.FuncAnimation(fig, animate, frames=30, interval=24, repeat=True, blit=True)
 
+# Polling Initialisation
 root.after(10, read_socket)
 root.after(10, read_serial)
 
+# Start GUI
 Tk.mainloop()
 
+# Clean-up
 server.stop()
 ser.close()
