@@ -42,7 +42,7 @@ last_x = 0
 last_x_lim = 0
 
 def animate(i):
-    # Switch statement for the serial location in order to get which one to do
+    # Switch statement for the serial location in order to get which one to` do
     global hr
     global threshold
     global position
@@ -50,7 +50,7 @@ def animate(i):
     global last_x_lim
    
     if position.get() == 'SVC':
-        [x, y] = signals.Default_Line()
+        [x, y] = signals.SVC_V1(hr.get())
     elif position.get() == 'HRA':
         [x, y] = signals.High_RA_V1(hr.get())
     elif position.get() == 'MRA':
@@ -60,11 +60,11 @@ def animate(i):
     elif position.get() == 'IVC':
         [x, y] = signals.IVC_V1(hr.get())
     elif position.get() == 'RV':
-        [x, y] = signals.Default_Line()
+        [x, y] = signals.RV_V1(hr.get())
     elif position.get() == 'RVW':
-        [x, y] = signals.Default_Line()
+        [x, y] = signals.RV_Wall_V1(hr.get())
     elif position.get() == 'PA':
-        [x, y] = signals.Default_Line()
+        [x, y] = signals.PA_V1(hr.get())
     else:
         [x, y] = signals.Default_Line()
 
@@ -85,7 +85,15 @@ def animate(i):
     return line,
 
 def change_dropdown(*args):
-    variable.get()
+    global ser
+    
+    try:
+        choice = variable.get().split(' -')
+        ser = serial.Serial(choice[0], 9600)
+    except SerialException as e:
+        print('Error: {}'.format(e))
+
+    print('Connection established.')
 
 Options=['']
 Options.extend(serial.tools.list_ports.comports())
@@ -120,6 +128,22 @@ def read_socket():
         
     root.after(10, read_socket)
 
+s = 'RIP'
+
+def read_serial():
+    global s
+
+    try:
+        s = ser.read()
+    except Exception as e:
+        print('Error: {}'.format(e))
+
+    print(s)
+
+    root.after(10, read_serial)
+
+ser = None
+
 Tk.Label(root,text="Simulation ECG").pack()
 
 canvas = FigureCanvasTkAgg(fig, master=root)
@@ -146,7 +170,9 @@ ax.get_lines()[0].set_color("xkcd:lime")
 ani = animation.FuncAnimation(fig, animate, frames=30, interval=24, repeat=True, blit=True)
 
 root.after(10, read_socket)
+root.after(10, read_serial)
 
 Tk.mainloop()
 
 server.stop()
+ser.close()
