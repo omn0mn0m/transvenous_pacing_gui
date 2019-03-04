@@ -1,5 +1,7 @@
 # Pip Modules
 import tkinter as Tk
+from tkinter import BooleanVar
+from tkinter import IntVar
 from tkinter import StringVar
 from tkinter import OptionMenu
 
@@ -8,21 +10,27 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-import multiprocessing
-
-import sys
 import serial
-#import time
 from serial import SerialException
 import serial.tools.list_ports
 
 # Project Modules
 import signals
-import server
+from server import Server
 
-# Socket Connection
-out_queue = multiprocessing.Queue()
-in_queue = multiprocessing.Queue()
+from queue import Queue
+
+socket_queue = Queue()
+
+server = Server(port=911)
+server.start(socket_queue)
+
+root = Tk.Tk()
+
+hr = IntVar(root, value=80)
+threshold = IntVar(root, value=20)
+
+position = StringVar(root, value='RIP')
 
 # Take care of plotting
 fig = plt.Figure(figsize=(14, 4.5), dpi=100)
@@ -30,13 +38,8 @@ fig = plt.Figure(figsize=(14, 4.5), dpi=100)
 new_x = []
 new_y = []
 
-global last_x
 last_x = 0
-
-global last_x_lim
 last_x_lim = 0
-
-global variable
 
 def animate(i):
     # Switch statement for the serial location in order to get which one to do
@@ -61,38 +64,10 @@ def animate(i):
     elif position.get() == 'RVW':
         [x, y] = signals.Default_Line()
     elif position.get() == 'PA':
-
         [x, y] = signals.Default_Line()
     else:
-        try:
-            ser = serial.Serial(variable.get(), 9600)
-        except SerialException as e:
-            print('Error: {}'.format(e))
-        while ser.is_open
-            s=ser.read()
-            if s='1'
-                [x, y] = signals.High_RA_V1(80)
-            elif s='2'
-                [x, y] = signals.Mid_RA_V1(80)
-            elif s='3'
-                [x, y] = signals.Low_RA_V1(80)
-            elif s='4'
-                [x, y] = signals.High_VA_V1(80)
-            elif s='5'
-                [x, y] = signals.Mid_VA_V1(80)
-            elif s='6'
-                [x, y] = signals.Low_VA_V1(80)
-            elif s='7'
-                [x, y] = signals.High_VA_V1(80)
-            elif s='8'
-                [x, y] = signals.RV_Wall_V1(80)
-            elif s='9'
-                [x, y] = signals.RV_Wall_V1(80)
+        [x, y] = signals.Default_Line()
 
-
-    global last_x
-    global last_x_lim
-    
     x_val = last_x + x[i]
     
     new_x.append(x_val)
@@ -107,7 +82,6 @@ def animate(i):
         last_x_lim += 5
         ax.set_xlim(last_x_lim, last_x_lim + 5)
     
-
     return line,
 
 def change_dropdown(*args):
@@ -117,7 +91,34 @@ Options=['']
 Options.extend(serial.tools.list_ports.comports())
 
 # GUI Utilisation
-root = Tk.Tk()
+wait_for_update = BooleanVar(root, value=False)
+wait_for_position = BooleanVar(root, value=False)
+
+def read_socket():
+    if not socket_queue.empty():
+        message = socket_queue.get()
+
+        print(message)
+
+        if wait_for_update.get():
+            result = [x.strip() for x in message.decode('utf-8').split(',')]
+
+            hr.set(result[0])
+            threshold.set(result[1])
+
+            wait_for_update.set(False)
+        elif wait_for_position.get():
+            position.set(message.decode('utf-8'))
+            wait_for_position.set(False)
+        else:
+            if message == b'update':
+                wait_for_update.set(True)
+            elif message == b'position':
+                wait_for_position.set(True)
+            elif message == b'close':
+                root.destroy()
+        
+    root.after(10, read_socket)
 
 Tk.Label(root,text="Simulation ECG").pack()
 
@@ -132,7 +133,6 @@ w.pack()
 
 variable.trace('w', change_dropdown)
 
-
 ax = fig.add_subplot(111)
 ax.set_xlim(last_x_lim, 5)
 ax.set_ylim(-5, 5)
@@ -145,4 +145,8 @@ line, = ax.plot(0, 0)
 ax.get_lines()[0].set_color("xkcd:lime")
 ani = animation.FuncAnimation(fig, animate, frames=30, interval=24, repeat=True, blit=True)
 
+root.after(10, read_socket)
+
 Tk.mainloop()
+
+server.stop()
