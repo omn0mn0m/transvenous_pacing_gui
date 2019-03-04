@@ -51,25 +51,18 @@ def animate(i):
     global last_x_lim
    
     if position.get() == 'SVC' or serial_position.get() == 1:
-        print("SVC")
         [x, y] = signals.SVC_V1(hr.get())
     elif position.get() == 'HRA' or serial_position.get() == 2:
-        print("HRA")
         [x, y] = signals.High_RA_V1(hr.get())
     elif position.get() == 'MRA' or serial_position.get() == 3:
-        print("MRA")
         [x, y] = signals.Mid_RA_V1(hr.get())
     elif position.get() == 'LRA' or serial_position.get() == 4:
-        print("LRA")
         [x, y] = signals.Low_RA_V1(hr.get())
     # elif position.get() == 'IVC' or serial_position.get() == 5:
-    #     print("IVC")
         [x, y] = signals.IVC_V1(hr.get())
     elif position.get() == 'RV' or serial_position.get() == 5:
-        print("RV")
         [x, y] = signals.RV_V1(hr.get())
     elif position.get() == 'RVW' or serial_position.get() == 6:
-        print("RVW")
         [x, y] = signals.RV_Wall_V1(hr.get())
     # elif position.get() == 'PA' or serial_position.get() == 8:
     #     print("PA")
@@ -96,12 +89,14 @@ def animate(i):
 def change_dropdown(*args):
     global ser
     
-    try:
-        choice = variable.get().split(' -')
-        ser = serial.Serial(choice[0], 9600)
-        print('Connection established.')
-    except SerialException as e:
-        print('Error: {}'.format(e))
+    if not variable.get() == '':
+        try:
+            choice = variable.get().split(' -')
+            ser = serial.Serial(choice[0], 9600)
+            print('Connection established.')
+            root.after(10, read_serial)
+        except SerialException as e:
+            print('Error: {}'.format(e))
 
     
 Options=['']
@@ -145,14 +140,15 @@ def read_serial():
     global ser
     global serial_position
 
-    try:
-        if ser.in_waiting:
-            s = ser.read()
-            serial_position.set(int(s))
-            print(int(s))
-        
-    except Exception as e:
-        print('Error: {}'.format(e))
+    if not ser == None:
+        try:
+            if ser.in_waiting:
+                s = ser.read()
+                serial_position.set(int(s))
+                print(int(s))
+            
+        except Exception as e:
+            print('Error: {}'.format(e))
 
     root.after(10, read_serial)
 
@@ -184,7 +180,6 @@ ani = animation.FuncAnimation(fig, animate, frames=30, interval=24, repeat=True,
 
 # Polling Initialisation
 root.after(10, read_socket)
-root.after(10, read_serial)
 
 # Start GUI
 Tk.mainloop()
