@@ -16,7 +16,11 @@ setup(
     long_description=readme,
     author='Nam Tran, Cooper Pearson, Richie Beck, Marcel Isper, Brianna Cathey',
     author_email='tranngocnam97@gmail.com',
-    url='https://github.com/omn0mn0m/Dungeon-Crawler-2',
+    url='https://github.com/omn0mn0m/Balloon-Catheterization-GUI',
     license=license,
-    packages=find_packages(exclude=('tests', 'docs'))
+    packages=find_packages(exclude=('tests', 'docs')),
+    tests_require=['pytest'],
+    extras_require={
+        'testing': ['pytest'],
+},
 )
