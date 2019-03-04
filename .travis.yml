@@ -8,7 +8,7 @@ install:
 
 # Run coverage tests
 script:
-  - pytest --cov
+  - pytest --cov=guiclient --cov=guiserver tests/
 
 # Print coverage report
 after_success:
