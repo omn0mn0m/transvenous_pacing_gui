@@ -15,16 +15,22 @@ class Client:
         except:
             print("Unable to connect...")
 
+            return None
+
     def stop(self):
         stop_message = 'close'
         self.client.send(stop_message.encode())
         print("Closing connection with server...")
+
+        return True
 
     def send_data(self, message):
         try:
             self.client.send(message.encode())
         except:
             print("Unable to send a message...")
+
+            return False
 
 if __name__ == '__main__':
     test_client = Client(port=911)
