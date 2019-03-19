@@ -1,7 +1,7 @@
 init:
-	pip3 install -r requirements.txt
+	pip install -r requirements.txt
 
 test:
-	python3 -m pytest --cov=dungeoncrawler2
+	pytest --cov-config .coveragerc --cov=guiclient --cov=guiserver tests/
 
 .PHONY: init test

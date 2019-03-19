@@ -38,72 +38,86 @@ def test_SVC_V1():
 def test_High_RA_V1():
     [x,y] = signals.High_RA_V1(80)
 
-    # assert x == test_x
+    # assert is_close_enough(x, test_x_hra)
+    # assert is_close_enough(y, test_y_hra)
 
 def test_High_RA_V2():
     [x,y] = signals.High_RA_V2(80)
 
-    # assert x == test_x
+    assert is_close_enough(x, test_x_hra)
+    assert is_close_enough(y, test_y_hra)
 
 def test_IVC_V1():
     [x,y] = signals.IVC_V1(80)
 
-    # assert x == test_x
+    # assert is_close_enough(x, test_x_ivc)
+    # assert is_close_enough(y, test_y_ivc)
 
 def test_IVC_V2():
     [x,y] = signals.IVC_V2(80)
 
-    # assert x == test_x
+    assert is_close_enough(x, test_x_ivc)
+    assert is_close_enough(y, test_y_ivc)
 
 def test_Mid_RA_V1():
     [x,y] = signals.Mid_RA_V1(80)
 
-    # assert x == test_x
+    # assert is_close_enough(x, test_x_mra)
+    # assert is_close_enough(y, test_y_mra)
 
 def test_Mid_RA_V2():
     [x,y] = signals.Mid_RA_V2(80)
 
-    # assert x == test_x
+    assert is_close_enough(x, test_x_mra)
+    assert is_close_enough(y, test_y_mra)
 
 def test_Low_RA_V1():
     [x,y] = signals.Low_RA_V1(80)
 
-    # assert x == test_x
+    # assert is_close_enough(x, test_x_lra)
+    # assert is_close_enough(y, test_y_lra)
 
 def test_Low_RA_V2():
     [x,y] = signals.Low_RA_V2(80)
 
-    # assert x == test_x
+    assert is_close_enough(x, test_x_lra)
+    assert is_close_enough(y, test_y_lra)
 
 def test_PA_V1():
     [x,y] = signals.PA_V1(80)
 
-    # assert x == test_x
+    # assert is_close_enough(x, test_x_pa)
+    # assert is_close_enough(y, test_y_pa)
 
 def test_PA_V2():
     [x,y] = signals.PA_V2(80)
 
-    # assert x == test_x
+    assert is_close_enough(x, test_x_pa)
+    assert is_close_enough(y, test_y_pa)
 
 def test_RV_V1():
     [x,y] = signals.RV_V1(80)
 
-    # assert x == test_x
+    # assert is_close_enough(x, test_x_rv)
+    # assert is_close_enough(y, test_y_rv)
 
 def test_RV_V2():
     [x,y] = signals.RV_V2(80)
 
-    # assert x == test_x
+    assert is_close_enough(x, test_x_rv)
+    assert is_close_enough(y, test_y_rv)
 
 def test_RV_Wall_V1():
     [x,y] = signals.RV_Wall_V1(80)
 
-    # assert x == test_x
+    # assert is_close_enough(x, test_x_rvw)
+    # assert is_close_enough(y, test_y_rvw)
 
 def test_RV_Wall_V2():
     [x,y] = signals.RV_Wall_V2(80)
 
-    # assert x == test_x
+    assert is_close_enough(x, test_x_rvw)
+    assert is_close_enough(y, test_y_rvw)
 
 def test_Default_Line():
     [x,y] = signals.Default_Line()
