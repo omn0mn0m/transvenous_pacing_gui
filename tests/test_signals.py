@@ -1,4 +1,4 @@
-from guiserver import signals
+from guiserver.signals import Signals
 from math import isclose
 
 import numpy as np
@@ -11,6 +11,7 @@ test_x_mra = [0,0.018570632,0.047056438,0.055386809,0.073408856,0.093496685,0.12
 test_x_pa  = [0,0.027741314,0.051020516,0.087658466,0.112257984,0.193705551,0.22089843,0.248396585,0.271674635,0.295244431,0.322448233,0.349597918,0.374220551,0.398804458,0.453091417,0.507399725,0.534569765,0.561768601,0.587800476,0.606422672,0.616875984,0.633868555,0.658601404,0.677764708,0.678131702,0.68046364,0.691403364,0.712283658,0.730762796,0.75]
 test_x_rv  = [0,0.062382888,0.099232933,0.117322867,0.12618795,0.144756536,0.170549656,0.194663635,0.208719466,0.229607528,0.302776604,0.341967544,0.360209767,0.386121551,0.411875501,0.437407102,0.463117273,0.48911431,0.515177015,0.541164836,0.567252886,0.593107066,0.615660854,0.634140282,0.655770461,0.673648957,0.68624757,0.706313503,0.732140034,0.75]
 test_x_rvw = [0,0.037133808,0.079682963,0.142626792,0.168193924,0.193825195,0.219482595,0.2451685,0.270894789,0.296599699,0.322302233,0.347995265,0.373750059,0.389869966,0.444351897,0.453662026,0.476417154,0.481165586,0.499919333,0.525735889,0.551430109,0.577123141,0.602818548,0.628598285,0.649645145,0.664338347,0.682242229,0.706466036,0.732248148,0.75]
+test_x_rip = [0.0, 0.025862069, 0.051724138, 0.077586207, 0.103448276, 0.129310345, 0.155172414, 0.181034483, 0.206896552, 0.232758621, 0.25862069, 0.284482759, 0.310344828, 0.336206897, 0.362068966, 0.387931034, 0.413793103, 0.439655172, 0.465517241, 0.49137931, 0.517241379, 0.543103448, 0.568965517, 0.594827586, 0.620689655, 0.646551724, 0.672413793, 0.698275862, 0.724137931, 0.75]
 
 test_y_svc = [0.200699432,-9.466672251,-0.090466867,0.237890813,0.240278098,-9.396058886,0.211756329,0.299997906,0.511779647,0.930008661,1.324032297,1.650850807,2.325037395,2.721977004,3.124748557,3.483734605,3.853458471,5.053308393,5.205983655,4.904708605,4.565009304,4.026273842,3.490301282,3.181483736,2.654151946,2.284190821,2.045310691,0.739965328,0.277879375,0.200699432]
 test_y_hra = [-0.635135135,-3.013513514,-1.030568001,-0.679867033,-0.369827046,-0.288505083,-0.247844101,-0.245302789,-3,0.026617527,-0.085200173,-0.130943778,-0.11569591,-0.100448042,-0.085200173,-0.085200173,-0.125861155,-0.141109023,-0.146191646,-0.146191646,-0.141109023,-0.085200173,0.077443754,0.158765718,0.179096209,0.097774245,-0.045555716,-0.237678855,-0.379992292,-0.635135135]
@@ -20,104 +21,110 @@ test_y_mra = [0.013727103,0.148486554,1.558697441,-3.689386394,-0.735850691,-0.5
 test_y_pa  = [-0.286999888,0.793805542,-1.152124189,-0.120576855,-0.024615402,-0.007930576,-0.051063523,-0.128738466,-0.241305938,-0.373336694,-0.42864328,-0.423635018,-0.353434952,-0.240073802,-0.216223599,-0.216167327,-0.233846301,-0.283619415,-0.408422659,-0.528776617,-0.7156179,-0.853895306,-0.906538322,-0.804581752,-0.663346909,-0.511073257,-0.322932077,-0.208711207,-0.169618164,-0.286999888]
 test_y_rv  = [-0.022754112,-6.299547798,0.132089058,0.345351944,0.503219523,0.600687648,0.603273213,0.501653286,0.446009634,0.66551456,1.709899479,0.352136804,0.22246319,0.184576555,0.200521876,0.292303456,0.323180269,0.256216519,0.166855532,0.103035253,0.005029718,-0.013210217,0.078847317,0.206724167,0.275341306,0.156905703,0.034183106,-0.040592617,-0.049402137,-0.022754112]
 test_y_rvw = [-0.289940828,2,-5.313609467,5.206175417,5.289953197,5.331051731,5.354762423,5.359504562,5.337374582,5.329471018,5.323148166,5.323148166,5.282049633,5.240951099,1.023668639,0.828402367,0.686390533,0.526627219,0.398437345,0.316240278,0.315449922,0.315449922,0.313869209,0.256173191,0.142203796,-0.018080485,-0.177732481,-0.268623469,-0.3279002,-0.289940828]
+test_y_rip = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
-def is_close_enough(list_1, list_2):
+signals = Signals()
+
+def is_close_enough(list_1, list_2, tolerance=1e-4):
     similar = True
 
     for i in range(min(len(list_1), len(list_2))):
-        similar = isclose(list_1[i], list_2[i], abs_tol=1e-4)
+        similar = isclose(list_1[i], list_2[i], abs_tol=tolerance)
 
     return similar
 
 def test_SVC_V1():
-    [x,y] = signals.SVC_V1(80)
+    [x,y] = signals.get_signal('SVC', 80, 0)
 
     assert is_close_enough(x, test_x_svc)
     assert is_close_enough(y, test_y_svc)
 
 def test_High_RA_V1():
-    [x,y] = signals.High_RA_V1(80)
+    [x,y] = signals.get_signal('HRA', 80, 0)
 
     # assert is_close_enough(x, test_x_hra)
     # assert is_close_enough(y, test_y_hra)
 
 def test_High_RA_V2():
-    [x,y] = signals.High_RA_V2(80)
+    [x,y] = signals.get_signal('HRA', 80, 1)
 
     assert is_close_enough(x, test_x_hra)
     assert is_close_enough(y, test_y_hra)
 
 def test_IVC_V1():
-    [x,y] = signals.IVC_V1(80)
+    [x,y] = signals.get_signal('IVC', 80, 0)
 
     # assert is_close_enough(x, test_x_ivc)
     # assert is_close_enough(y, test_y_ivc)
 
 def test_IVC_V2():
-    [x,y] = signals.IVC_V2(80)
+    [x,y] = signals.get_signal('IVC', 80, 1)
 
     assert is_close_enough(x, test_x_ivc)
     assert is_close_enough(y, test_y_ivc)
 
 def test_Mid_RA_V1():
-    [x,y] = signals.Mid_RA_V1(80)
+    [x,y] = signals.get_signal('MRA', 80, 0)
 
     # assert is_close_enough(x, test_x_mra)
     # assert is_close_enough(y, test_y_mra)
 
 def test_Mid_RA_V2():
-    [x,y] = signals.Mid_RA_V2(80)
+    [x,y] = signals.get_signal('MRA', 80, 1)
 
     assert is_close_enough(x, test_x_mra)
     assert is_close_enough(y, test_y_mra)
 
 def test_Low_RA_V1():
-    [x,y] = signals.Low_RA_V1(80)
+    [x,y] = signals.get_signal('LRA', 80, 0)
 
     # assert is_close_enough(x, test_x_lra)
     # assert is_close_enough(y, test_y_lra)
 
 def test_Low_RA_V2():
-    [x,y] = signals.Low_RA_V2(80)
+    [x,y] = signals.get_signal('LRA', 80, 1)
 
     assert is_close_enough(x, test_x_lra)
     assert is_close_enough(y, test_y_lra)
 
 def test_PA_V1():
-    [x,y] = signals.PA_V1(80)
+    [x,y] = signals.get_signal('PA', 80, 0)
 
     # assert is_close_enough(x, test_x_pa)
     # assert is_close_enough(y, test_y_pa)
 
 def test_PA_V2():
-    [x,y] = signals.PA_V2(80)
+    [x,y] = signals.get_signal('PA', 80, 1)
 
     assert is_close_enough(x, test_x_pa)
     assert is_close_enough(y, test_y_pa)
 
 def test_RV_V1():
-    [x,y] = signals.RV_V1(80)
+    [x,y] = signals.get_signal('RV', 80, 0)
 
     # assert is_close_enough(x, test_x_rv)
     # assert is_close_enough(y, test_y_rv)
 
 def test_RV_V2():
-    [x,y] = signals.RV_V2(80)
+    [x,y] = signals.get_signal('RV', 80, 1)
 
     assert is_close_enough(x, test_x_rv)
     assert is_close_enough(y, test_y_rv)
 
 def test_RV_Wall_V1():
-    [x,y] = signals.RV_Wall_V1(80)
+    [x,y] = signals.get_signal('RVW', 80, 0)
 
     # assert is_close_enough(x, test_x_rvw)
     # assert is_close_enough(y, test_y_rvw)
 
 def test_RV_Wall_V2():
-    [x,y] = signals.RV_Wall_V2(80)
+    [x,y] = signals.get_signal('RVW', 80, 1)
 
     assert is_close_enough(x, test_x_rvw)
     assert is_close_enough(y, test_y_rvw)
 
 def test_Default_Line():
-    [x,y] = signals.Default_Line()
+    [x,y] = signals.get_signal('RIP', 80, 0)
+
+    assert is_close_enough(x, test_x_rip)
+    assert is_close_enough(y, test_y_rip)

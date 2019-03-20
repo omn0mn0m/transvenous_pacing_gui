@@ -15,7 +15,7 @@ from serial import SerialException
 import serial.tools.list_ports
 
 # Project Modules
-import signals
+from signals import Signals
 from server import Server
 
 from queue import Queue
@@ -24,6 +24,8 @@ socket_queue = Queue()
 
 server = Server(port=911)
 server.start(socket_queue)
+
+ecg_signals = Signals()
 
 root = Tk.Tk()
 
@@ -50,25 +52,27 @@ def animate(i):
     global last_x
     global last_x_lim
    
-    if position.get() == 'SVC' or serial_position.get() == 1:
-        [x, y] = signals.SVC_V1(hr.get())
-    elif position.get() == 'HRA' or serial_position.get() == 2:
-        [x, y] = signals.High_RA_V1(hr.get())
-    elif position.get() == 'MRA' or serial_position.get() == 3:
-        [x, y] = signals.Mid_RA_V1(hr.get())
-    elif position.get() == 'LRA' or serial_position.get() == 4:
-        [x, y] = signals.Low_RA_V1(hr.get())
-    # elif position.get() == 'IVC' or serial_position.get() == 5:
-        [x, y] = signals.IVC_V1(hr.get())
-    elif position.get() == 'RV' or serial_position.get() == 5:
-        [x, y] = signals.RV_V1(hr.get())
-    elif position.get() == 'RVW' or serial_position.get() == 6:
-        [x, y] = signals.RV_Wall_V1(hr.get())
-    # elif position.get() == 'PA' or serial_position.get() == 8:
-    #     print("PA")
-        [x, y] = signals.PA_V1(hr.get())
-    else:
-        [x, y] = signals.Default_Line()
+    # if position.get() == 'SVC' or serial_position.get() == 1:
+    #     [x, y] = signals.SVC_V1(hr.get())
+    # elif position.get() == 'HRA' or serial_position.get() == 2:
+    #     [x, y] = signals.High_RA_V1(hr.get())
+    # elif position.get() == 'MRA' or serial_position.get() == 3:
+    #     [x, y] = signals.Mid_RA_V1(hr.get())
+    # elif position.get() == 'LRA' or serial_position.get() == 4:
+    #     [x, y] = signals.Low_RA_V1(hr.get())
+    # # elif position.get() == 'IVC' or serial_position.get() == 5:
+    #     [x, y] = signals.IVC_V1(hr.get())
+    # elif position.get() == 'RV' or serial_position.get() == 5:
+    #     [x, y] = signals.RV_V1(hr.get())
+    # elif position.get() == 'RVW' or serial_position.get() == 6:
+    #     [x, y] = signals.RV_Wall_V1(hr.get())
+    # # elif position.get() == 'PA' or serial_position.get() == 8:
+    # #     print("PA")
+    #     [x, y] = signals.PA_V1(hr.get())
+    # else:
+    #     [x, y] = signals.Default_Line()
+
+    [x, y] = ecg_signals.get_signal(position.get(), hr.get())
 
     x_val = last_x + x[i]
     
