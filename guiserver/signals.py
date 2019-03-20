@@ -3,6 +3,18 @@ import os
 
 class Signals():
 
+    signal_index = {
+        0: 'RIP',
+        1: 'SVC',
+        2: 'HRA',
+        3: 'MRA',
+        4: 'LRA',
+        5: 'RV',
+        6: 'RVW',
+        15: 'IVC',
+        16: 'PA'
+    }
+
     def __init__(self):
         json_file = os.path.abspath('guiserver/signals.json')
 

@@ -33,7 +33,9 @@ hr = IntVar(root, value=80)
 threshold = IntVar(root, value=20)
 
 position = StringVar(root, value='RIP')
-serial_position = IntVar(root, value='-1')
+serial_position = IntVar(root, value='0')
+
+override_position = BooleanVar(root, value=True)
 
 # Take care of plotting
 fig = plt.Figure(figsize=(14, 4.5), dpi=100)
@@ -49,30 +51,14 @@ def animate(i):
     global threshold
     global position
     global serial_position
+    global override_position
     global last_x
     global last_x_lim
-   
-    # if position.get() == 'SVC' or serial_position.get() == 1:
-    #     [x, y] = signals.SVC_V1(hr.get())
-    # elif position.get() == 'HRA' or serial_position.get() == 2:
-    #     [x, y] = signals.High_RA_V1(hr.get())
-    # elif position.get() == 'MRA' or serial_position.get() == 3:
-    #     [x, y] = signals.Mid_RA_V1(hr.get())
-    # elif position.get() == 'LRA' or serial_position.get() == 4:
-    #     [x, y] = signals.Low_RA_V1(hr.get())
-    # # elif position.get() == 'IVC' or serial_position.get() == 5:
-    #     [x, y] = signals.IVC_V1(hr.get())
-    # elif position.get() == 'RV' or serial_position.get() == 5:
-    #     [x, y] = signals.RV_V1(hr.get())
-    # elif position.get() == 'RVW' or serial_position.get() == 6:
-    #     [x, y] = signals.RV_Wall_V1(hr.get())
-    # # elif position.get() == 'PA' or serial_position.get() == 8:
-    # #     print("PA")
-    #     [x, y] = signals.PA_V1(hr.get())
-    # else:
-    #     [x, y] = signals.Default_Line()
-
-    [x, y] = ecg_signals.get_signal(position.get(), hr.get())
+    
+    if (override_position.get()):
+        [x, y] = ecg_signals.get_signal(position.get(), hr.get())
+    else:
+        [x, y] = ecg_signals.get_signal(ecg_signals.signal_index[serial_position.get()], hr.get())
 
     x_val = last_x + x[i]
     
@@ -126,11 +112,14 @@ def read_socket():
         elif wait_for_position.get():
             position.set(message.decode('utf-8'))
             wait_for_position.set(False)
+            override_position.set(True)
         else:
             if message == b'update':
                 wait_for_update.set(True)
-            elif message == b'position':
+            elif message == b'start-pos':
                 wait_for_position.set(True)
+            elif message == b'stop-pos':
+                override_position.set(False)
             elif message == b'close':
                 root.destroy()
         

@@ -31,8 +31,11 @@ def send_customisations():
     client.send_data("{},{}".format(hr.get(), threshold.get()))
 
 def send_position():
-    client.send_data("position")
+    client.send_data("start-pos")
     client.send_data(position.get())
+
+def stop_position():
+    client.send_data("stop-pos")
 
 # ============ Connection Space ===============
 frame_connection = Frame(master)
@@ -100,6 +103,9 @@ for button_text, position_value in POSITIONS:
 
 btn_send_position = Button(frame_position, text="Send", command=send_position)
 btn_send_position.pack()
+
+btn_stop_position = Button(frame_position, text="Stop", command=stop_position)
+btn_stop_position.pack()
 
 tk.mainloop()
 
