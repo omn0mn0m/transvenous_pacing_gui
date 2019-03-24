@@ -40,18 +40,15 @@ override_position = BooleanVar(root, value=True)
 # Take care of plotting
 fig = plt.Figure(figsize=(14, 4.5), dpi=100)
 
-new_x = []
-new_y = []
+new_x = [0.0]
+new_y = [0.0]
 
 last_x = 0
 last_x_lim = 0
 
 def animate(i):
-    global hr
-    global threshold
-    global position
-    global serial_position
-    global override_position
+    global new_x
+    global new_y
     global last_x
     global last_x_lim
     
@@ -61,11 +58,12 @@ def animate(i):
         [x, y] = ecg_signals.get_signal(ecg_signals.signal_index[serial_position.get()], hr.get())
 
     x_val = last_x + x[i]
-    
-    new_x.append(x_val)
-    new_y.append(y[i])
-    
-    line.set_data(new_x, new_y)  # update the data
+
+    if x_val > new_x[-1]:
+        new_x.append(x_val)
+        new_y.append(y[i])
+
+        line.set_data(new_x, new_y)  # update the data
     
     if i == 29:
         last_x = new_x[-1]
