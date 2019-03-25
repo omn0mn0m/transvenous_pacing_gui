@@ -37,6 +37,9 @@ serial_position = IntVar(root, value='0')
 
 override_position = BooleanVar(root, value=True)
 
+pathway_1 = IntVar(root, value=0)
+pathway_2 = IntVar(root, value=0)
+
 # Take care of plotting
 fig = plt.Figure(figsize=(14, 4.5), dpi=100)
 
@@ -52,10 +55,19 @@ def animate(i):
     global last_x
     global last_x_lim
     
-    if (override_position.get()):
+    if override_position.get():
         [x, y] = ecg_signals.get_signal(position.get(), hr.get())
     else:
-        [x, y] = ecg_signals.get_signal(ecg_signals.signal_index[serial_position.get()], hr.get())
+        position_index = serial_position.get()
+
+        if position_index == 5:
+            position_index = position_index + pathway_1.get()
+        elif position_index == 6:
+            position_index = position_index + pathway_2.get()
+        else:
+            position_index = position_index
+
+        [x, y] = ecg_signals.get_signal(ecg_signals.signal_index[position_index], hr.get())
 
     x_val = last_x + x[i]
 
@@ -93,6 +105,8 @@ Options.extend(serial.tools.list_ports.comports())
 # GUI Utilisation
 wait_for_update = BooleanVar(root, value=False)
 wait_for_position = BooleanVar(root, value=False)
+wait_for_pathway_1 = BooleanVar(root, value=False)
+wait_for_pathway_2 = BooleanVar(root, value=False)
 
 def read_socket():
     if not socket_queue.empty():
@@ -111,6 +125,14 @@ def read_socket():
             position.set(message.decode('utf-8'))
             wait_for_position.set(False)
             override_position.set(True)
+        elif wait_for_pathway_1.get():
+            pathway_1.set(int(message.decode('utf-8')))
+            print(pathway_1.get())
+            wait_for_pathway_1.set(False)
+        elif wait_for_pathway_2.get():
+            pathway_2.set(int(message.decode('utf-8')))
+            print(pathway_2.get())
+            wait_for_pathway_2.set(False)
         else:
             if message == b'update':
                 wait_for_update.set(True)
@@ -118,6 +140,10 @@ def read_socket():
                 wait_for_position.set(True)
             elif message == b'stop-pos':
                 override_position.set(False)
+            elif message == b'chpa1':
+                wait_for_pathway_1.set(True)
+            elif message == b'chpa2':
+                wait_for_pathway_2.set(True)
             elif message == b'close':
                 root.destroy()
         

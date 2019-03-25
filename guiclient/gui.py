@@ -5,6 +5,7 @@ from tkinter import Frame
 from tkinter import Label
 from tkinter import Radiobutton
 from tkinter import StringVar
+from tkinter import IntVar
 
 from client import Client
 
@@ -18,7 +19,10 @@ host = StringVar(master, value='127.0.0.1')
 hr = StringVar(master, value=0)
 threshold = StringVar(master, value=0)
 
-position = StringVar(master)
+position = StringVar(master, value='SVC')
+
+pathway_1 = IntVar(master, value=0)
+pathway_2 = IntVar(master, value=0)
 
 def connect():
     client.start()
@@ -94,8 +98,6 @@ POSITIONS = [
     ("Asystole", "RIP"),
 ]
 
-position.set("SVC")
-
 Label(frame_position, text="Heart Positions").pack()
 
 for button_text, position_value in POSITIONS:
@@ -106,6 +108,41 @@ btn_send_position.pack()
 
 btn_stop_position = Button(frame_position, text="Stop", command=stop_position)
 btn_stop_position.pack()
+
+# ========== Pathway Selection ==============
+frame_pathway = Frame(master)
+frame_pathway.pack(pady=5)
+
+PATHWAYS_1 = [
+    ("Low Right Atrium", 0),
+    ("Inferior Vena Cava", 10)
+]
+
+PATHWAYS_2 = [
+    ("Right Ventricular Wall", 0),
+    ("Pulmonary Artery", 10)
+]
+
+def callback_pathway_1(*args):
+    client.send_data("chpa1")
+    client.send_data("%d" % pathway_1.get())
+
+def callback_pathway_2(*args):
+    client.send_data("chpa2")
+    client.send_data("%d" % pathway_2.get())
+
+pathway_1.trace('w', callback_pathway_1)
+pathway_2.trace('w', callback_pathway_2)
+
+Label(frame_pathway, text="Pathway Selection 1").pack(pady=5)
+
+for button_text, pathway_value in PATHWAYS_1:
+    Radiobutton(frame_pathway, text=button_text, value=pathway_value, variable=pathway_1).pack()
+
+Label(frame_pathway, text="Pathway Selection 1").pack(pady=5)
+
+for button_text, pathway_value in PATHWAYS_2:
+    Radiobutton(frame_pathway, text=button_text, value=pathway_value, variable=pathway_2).pack()
 
 tk.mainloop()
 
