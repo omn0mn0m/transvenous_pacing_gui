@@ -169,7 +169,7 @@ def read_serial():
 
     root.after(10, read_serial)
 BPM="BPM "
-hr1=str(120)
+hr1=str(hr.get())
 whites="                                  "
 Tk.Label(root, text="Simulation ECG",font="Times 30 bold", bg="black",fg="lime green").grid(row=0, column=1)
 Tk.Label(root, text=BPM+hr1+whites,font='Times 24 bold',bg="black", fg="lime green").grid(row=0, column=2)
