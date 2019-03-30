@@ -41,7 +41,7 @@ pathway_1 = IntVar(root, value=0)
 pathway_2 = IntVar(root, value=0)
 
 # Take care of plotting
-fig = plt.Figure(figsize=(14, 4.5), dpi=100)
+fig = plt.Figure(figsize=(14, 4.5), dpi=100,facecolor='k',edgecolor='k')
 
 new_x = [0.0]
 new_y = [0.0]
@@ -168,17 +168,21 @@ def read_serial():
             print('Error: {}'.format(e))
 
     root.after(10, read_serial)
-
-Tk.Label(root,text="Simulation ECG").pack()
+BPM="BPM "
+hr1=str(120)
+whites="                                  "
+Tk.Label(root, text="Simulation ECG",font="Times 30 bold", bg="black",fg="lime green").grid(row=0, column=1)
+Tk.Label(root, text=BPM+hr1+whites,font='Times 24 bold',bg="black", fg="lime green").grid(row=0, column=2)
 
 canvas = FigureCanvasTkAgg(fig, master=root)
-canvas.get_tk_widget().pack()
+canvas.get_tk_widget().grid(row=1, column=1)
+root.configure(bg="black")
 
 variable = StringVar(root)
 variable.set(Options[0]) #Default option
 
 w=OptionMenu(root, variable, *Options)
-w.pack()
+w.grid(row=2, column=1)
 
 variable.trace('w', change_dropdown)
 
