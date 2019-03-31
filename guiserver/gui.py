@@ -34,6 +34,7 @@ threshold = IntVar(root, value=20)
 
 position = StringVar(root, value='RIP')
 serial_position = IntVar(root, value='0')
+hr1=StringVar(root, value='0')
 
 override_position = BooleanVar(root, value=False)
 
@@ -41,7 +42,7 @@ pathway_1 = IntVar(root, value=0)
 pathway_2 = IntVar(root, value=0)
 
 # Take care of plotting
-fig = plt.Figure(figsize=(14, 4.5), dpi=100)
+fig = plt.Figure(figsize=(14, 4.5), dpi=100,facecolor='k',edgecolor='k')
 
 new_x = [0.0]
 new_y = [0.0]
@@ -121,6 +122,7 @@ def read_socket():
 
             hr.set(result[0])
             threshold.set(result[1])
+            hr1.set(hr.get())
 
             wait_for_update.set(False)
         elif wait_for_position.get():
@@ -170,17 +172,22 @@ def read_serial():
             print('Error: {}'.format(e))
 
     root.after(10, read_serial)
-
-Tk.Label(root,text="Simulation ECG").pack()
+BPM="BPM "
+#hr2=str(hr1)
+whites="                                  "
+Tk.Label(root, text="Simulation ECG",font="Times 30 bold", bg="black",fg="lime green").grid(row=0, column=1)
+Tk.Label(root, textvariable=hr1,font='Times 24 bold',bg="black", fg="lime green").grid(row=0, column=3)
+Tk.Label(root, text="BPM", font='Times 24 bold', bg="black", fg="lime green").grid(row=0, column=2)
 
 canvas = FigureCanvasTkAgg(fig, master=root)
-canvas.get_tk_widget().pack()
+canvas.get_tk_widget().grid(row=1, column=1)
+root.configure(bg="black")
 
 variable = StringVar(root)
 variable.set(Options[0]) #Default option
 
 w=OptionMenu(root, variable, *Options)
-w.pack()
+w.grid(row=2, column=1)
 
 variable.trace('w', change_dropdown)
 
