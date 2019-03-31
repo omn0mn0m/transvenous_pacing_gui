@@ -34,6 +34,7 @@ threshold = IntVar(root, value=20)
 
 position = StringVar(root, value='RIP')
 serial_position = IntVar(root, value='0')
+hr1=StringVar(root, value='0')
 
 override_position = BooleanVar(root, value=True)
 
@@ -119,6 +120,7 @@ def read_socket():
 
             hr.set(result[0])
             threshold.set(result[1])
+            hr1.set(hr.get())
 
             wait_for_update.set(False)
         elif wait_for_position.get():
@@ -169,10 +171,11 @@ def read_serial():
 
     root.after(10, read_serial)
 BPM="BPM "
-hr1=str(hr.get())
+#hr2=str(hr1)
 whites="                                  "
 Tk.Label(root, text="Simulation ECG",font="Times 30 bold", bg="black",fg="lime green").grid(row=0, column=1)
-Tk.Label(root, text=BPM+hr1+whites,font='Times 24 bold',bg="black", fg="lime green").grid(row=0, column=2)
+Tk.Label(root, textvariable=hr1,font='Times 24 bold',bg="black", fg="lime green").grid(row=0, column=3)
+Tk.Label(root, text="BPM", font='Times 24 bold', bg="black", fg="lime green").grid(row=0, column=2)
 
 canvas = FigureCanvasTkAgg(fig, master=root)
 canvas.get_tk_widget().grid(row=1, column=1)
