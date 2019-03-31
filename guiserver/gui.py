@@ -35,7 +35,7 @@ threshold = IntVar(root, value=20)
 position = StringVar(root, value='RIP')
 serial_position = IntVar(root, value='0')
 
-override_position = BooleanVar(root, value=True)
+override_position = BooleanVar(root, value=False)
 
 pathway_1 = IntVar(root, value=0)
 pathway_2 = IntVar(root, value=0)
@@ -60,12 +60,14 @@ def animate(i):
     else:
         position_index = serial_position.get()
 
-        if position_index == 5:
+        if position_index == 4:
             position_index = position_index + pathway_1.get()
         elif position_index == 6:
             position_index = position_index + pathway_2.get()
         else:
             position_index = position_index
+
+        print(ecg_signals.signal_index[position_index])
 
         [x, y] = ecg_signals.get_signal(ecg_signals.signal_index[position_index], hr.get())
 
