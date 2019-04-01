@@ -25,6 +25,7 @@ pathway_1 = IntVar(master, value=0)
 pathway_2 = IntVar(master, value=0)
 
 def connect():
+    client.set_hostname(host.get())
     client.start()
 
 def send_command():

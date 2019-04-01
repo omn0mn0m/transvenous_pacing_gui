@@ -33,6 +33,12 @@ class Server:
         
         return message
 
+    def set_hostname(self, host):
+        self.host = host
+
+    def get_hostname(self):
+        return self.host
+
     def listen(self, connection, address, queue):
         while True:
             message = self.receive_data(connection, address, queue)

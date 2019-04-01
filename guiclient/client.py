@@ -24,6 +24,12 @@ class Client:
 
         return True
 
+    def set_hostname(self, host):
+        self.host = host
+
+    def get_hostname(self):
+        return self.host
+
     def send_data(self, message):
         try:
             self.client.send(message.encode())
