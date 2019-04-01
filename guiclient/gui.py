@@ -61,7 +61,7 @@ frame_signal.pack(pady=5)
 Label(frame_signal, text="Heart Rate", font='Times 12 bold').grid(row=0, column=0)
 
 entry_hr = Entry(frame_signal, textvariable=hr)
-POentry_hr.grid(row=0, column=1)
+entry_hr.grid(row=0, column=1)
 
 Label(frame_signal, text="Pacing Threshold", font='Times 12 bold').grid(row=1, column=0)
 
