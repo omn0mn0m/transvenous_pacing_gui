@@ -50,11 +50,14 @@ new_y = [0.0]
 last_x = 0
 last_x_lim = 0
 
+position_to_show = 0
+
 def animate(i):
     global new_x
     global new_y
     global last_x
     global last_x_lim
+    global position_to_show
     
     if override_position.get():
         [x, y] = ecg_signals.get_signal(position.get(), hr.get())
@@ -69,6 +72,24 @@ def animate(i):
             position_index = position_index
 
         print(ecg_signals.signal_index[position_index])
+
+        if position_index == 0:
+            hr1.set(0)
+        else:
+            hr1.set(hr.get())
+
+        # if position_to_show <= position_index:
+        #     position_to_show = position_index
+
+        # [x, y] = ecg_signals.get_signal(ecg_signals.signal_index[position_to_show], hr.get())
+            
+        if position_index == 0:
+            if position_to_show == 1:
+                position_index = 0
+            else:
+                position_index = position_to_show
+        else:
+            position_to_show = position_index
 
         [x, y] = ecg_signals.get_signal(ecg_signals.signal_index[position_index], hr.get())
 
@@ -122,7 +143,7 @@ def read_socket():
 
             hr.set(result[0])
             threshold.set(result[1])
-            hr1.set(hr.get())
+            
 
             wait_for_update.set(False)
         elif wait_for_position.get():
