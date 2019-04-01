@@ -73,11 +73,6 @@ def animate(i):
 
         print(ecg_signals.signal_index[position_index])
 
-        if position_index == 0:
-            hr1.set(0)
-        else:
-            hr1.set(hr.get())
-
         # if position_to_show <= position_index:
         #     position_to_show = position_index
 
@@ -90,6 +85,11 @@ def animate(i):
                 position_index = position_to_show
         else:
             position_to_show = position_index
+
+        if position_index == 0:
+            hr1.set(0)
+        else:
+            hr1.set(hr.get())
 
         [x, y] = ecg_signals.get_signal(ecg_signals.signal_index[position_index], hr.get())
 
