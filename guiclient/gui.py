@@ -60,7 +60,7 @@ frame_signal.pack(pady=5)
 Label(frame_signal, text="Heart Rate", font='Times 12 bold').grid(row=0, column=0)
 
 entry_hr = Entry(frame_signal, textvariable=hr)
-entry_hr.grid(row=0, column=1)
+POentry_hr.grid(row=0, column=1)
 
 Label(frame_signal, text="Pacing Threshold", font='Times 12 bold').grid(row=1, column=0)
 
@@ -115,12 +115,12 @@ frame_pathway.pack(pady=5)
 
 PATHWAYS_1 = [
     ("Low Right Atrium", 0),
-    ("Inferior Vena Cava", 10)
+    ("Pulmonary Artery", 10)
 ]
 
 PATHWAYS_2 = [
     ("Right Ventricular Wall", 0),
-    ("Pulmonary Artery", 10)
+    ("Inferior Vena Cava", 10)
 ]
 
 def callback_pathway_1(*args):
