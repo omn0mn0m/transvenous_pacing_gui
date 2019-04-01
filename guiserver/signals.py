@@ -11,8 +11,8 @@ class Signals():
         4: 'LRA',
         5: 'RV',
         6: 'RVW',
-        14: 'IVC',
-        16: 'PA'
+        14: 'PA',
+        16: 'IVC'
     }
 
     def __init__(self):
