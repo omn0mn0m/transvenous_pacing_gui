@@ -62,7 +62,6 @@ def animate(i):
     global position_to_show
 
     variation = random.randint(0, 1)
-    print(variation)
     
     if override_position.get():
         [x, y] = ecg_signals.get_signal(position.get(), hr.get(), variation)
