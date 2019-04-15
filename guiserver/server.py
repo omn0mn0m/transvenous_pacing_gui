@@ -14,11 +14,8 @@ class Server:
         self.server = socket.socket()
         self.server.bind((self.host, self.port))
         self.server.listen(5)
-
-        (self.connection, self.address) = self.server.accept()
-        print("Connection established with client...")
-
-        self.server_thread = threading.Thread(target=self.listen, args=(self.connection, self.address, queue))
+        
+        self.server_thread = threading.Thread(target=self.listen, args=(queue,))
         self.server_thread.start()
 
     def stop(self):
@@ -39,9 +36,12 @@ class Server:
     def get_hostname(self):
         return self.host
 
-    def listen(self, connection, address, queue):
+    def listen(self, queue):
+        (self.connection, self.address) = self.server.accept()
+        print("Connection established with client...")
+
         while True:
-            message = self.receive_data(connection, address, queue)
+            message = self.receive_data(self.connection, self.address, queue)
 
             if message == b'close':
                 break
