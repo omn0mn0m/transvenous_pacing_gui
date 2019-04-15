@@ -5,11 +5,10 @@ python:
 # Set up dependencies
 install:
   - pip install -r requirements.txt
-  - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
 
 # Run coverage tests
 script:
-  - pytest --cov-config .coveragerc --cov=guiclient --cov=guiserver tests/
+  - sudo pytest --cov-config .coveragerc --cov=guiclient --cov=guiserver tests/
 
 # Print coverage report
 after_success:
