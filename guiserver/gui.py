@@ -10,6 +10,8 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+import random
+
 import serial
 from serial import SerialException
 import serial.tools.list_ports
@@ -58,9 +60,12 @@ def animate(i):
     global last_x
     global last_x_lim
     global position_to_show
+
+    variation = random.randint(0, 1)
+    print(variation)
     
     if override_position.get():
-        [x, y] = ecg_signals.get_signal(position.get(), hr.get())
+        [x, y] = ecg_signals.get_signal(position.get(), hr.get(), variation)
     else:
         position_index = serial_position.get()
 
@@ -91,7 +96,7 @@ def animate(i):
         else:
             hr1.set(hr.get())
 
-        [x, y] = ecg_signals.get_signal(ecg_signals.signal_index[position_index], hr.get())
+        [x, y] = ecg_signals.get_signal(ecg_signals.signal_index[position_index], hr.get(), variation)
 
     x_val = last_x + x[i]
 
@@ -215,7 +220,7 @@ variable.trace('w', change_dropdown)
 # ===== ECG Signal Setup
 ax = fig.add_subplot(111)
 ax.set_xlim(last_x_lim, 5)
-ax.set_ylim(-7, 7)
+ax.set_ylim(-1, 1)
 ax.set_yticklabels([])
 ax.set_xticklabels([])
 ax.xaxis.set_tick_params(width=1, top=True)

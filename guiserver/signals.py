@@ -32,7 +32,4 @@ class Signals():
 
         xx = [(w * d) - new_first for w in xx]
 
-        yy.pop(29)
-        yy.append(yy[0])
-
         return xx, yy
