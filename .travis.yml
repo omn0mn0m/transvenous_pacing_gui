@@ -5,6 +5,7 @@ python:
 # Set up dependencies
 install:
   - pip install -r requirements.txt
+  - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
 
 # Run coverage tests
 script:
