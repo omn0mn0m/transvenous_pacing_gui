@@ -14,7 +14,7 @@ client = Client(port=911)
 master = tk.Tk("Phantom - Client")
 
 message = StringVar(master)
-host = StringVar(master, value='127.0.0.1')
+host = StringVar(master, value=client.get_hostname())
 
 hr = StringVar(master, value=0)
 threshold = StringVar(master, value=0)
@@ -25,7 +25,7 @@ pathway_1 = IntVar(master, value=0)
 pathway_2 = IntVar(master, value=0)
 
 def connect():
-    client.set_hostname(host.get())
+    # client.set_hostname(host.get())
     client.start()
 
 def send_command():
