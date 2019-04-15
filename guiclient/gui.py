@@ -116,12 +116,12 @@ frame_pathway.pack(pady=5)
 
 PATHWAYS_1 = [
     ("Low Right Atrium", 0),
-    ("Pulmonary Artery", 10)
+    ("Inferior Vena Cava", 10)
 ]
 
 PATHWAYS_2 = [
     ("Right Ventricular Wall", 0),
-    ("Inferior Vena Cava", 10)
+    ("Pulmonary Artery", 10)
 ]
 
 def callback_pathway_1(*args):
