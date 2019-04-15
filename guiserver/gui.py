@@ -22,7 +22,7 @@ from queue import Queue
 
 socket_queue = Queue()
 
-server = Server(port=911)
+server = Server(port=25565)
 server.start(socket_queue)
 
 ecg_signals = Signals()

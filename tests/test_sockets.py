@@ -6,13 +6,13 @@ from queue import Queue
 def client_conn():
     from guiclient import client
 
-    return client.Client(port=911)
+    return client.Client(port=25565)
 
 @pytest.fixture
 def server_conn():
     from guiserver import server
 
-    return server.Server(port=911)
+    return server.Server(port=25565)
 
 def test_server_init(server_conn):
     assert not server_conn == None
