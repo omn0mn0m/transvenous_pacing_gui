@@ -8,7 +8,7 @@ install:
 
 # Run coverage tests
 script:
-  - sudo pytest --cov-config .coveragerc --cov=guiclient --cov=guiserver tests/
+  - pytest --cov-config .coveragerc --cov=guiclient --cov=guiserver tests/
 
 # Print coverage report
 after_success:
