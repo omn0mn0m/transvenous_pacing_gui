@@ -18,8 +18,11 @@ class Server:
         self.server_thread = threading.Thread(target=self.listen, args=(queue,))
         self.server_thread.start()
 
+        return self.server_thread
+
     def stop(self):
         print("Closing connection with client...")
+        self.stop_accept()
         self.server_thread.join()
         self.connection.close()
 
@@ -45,6 +48,16 @@ class Server:
 
             if message == b'close':
                 break
+
+    def stop_accept(self):
+        try:
+            with socket.socket() as tmp_client:
+                tmp_client.connect((self.host, self.port))
+                stop_message = "close"
+                tmp_client.send(stop_message.encode())
+                print("Forcing server closed")
+        except Exception as e:
+            print(e)
 
 if __name__ == '__main__':
     queue = Queue()

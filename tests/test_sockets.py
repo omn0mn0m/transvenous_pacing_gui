@@ -1,38 +1,42 @@
-from guiclient import client
-from guiserver import server
-
 import pytest
 
 from queue import Queue
 
-def test_server_init():
-    test_server = server.Server(port=911)
+@pytest.fixture
+def client_conn():
+    from guiclient import client
 
-    assert not test_server == None
+    return client.Client(port=911)
 
-def test_server_stop():
-    test_server = server.Server(port=911)
+@pytest.fixture
+def server_conn():
+    from guiserver import server
 
+    return server.Server(port=911)
+
+def test_server_init(server_conn):
+    assert not server_conn == None
+
+def test_server_stop(server_conn):
     with pytest.raises(Exception):
-        test_server.stop()
+        server_conn.stop()
 
-def test_client_init():
-    test_client = client.Client(port=911)
+def test_client_init(client_conn):
+    assert not client_conn == None
 
-    assert not test_client == None
+def test_client_start(client_conn):
+    assert client_conn.start() == None
 
-def test_client_start():
-    test_client = client.Client(port=911)
+def test_server_start_stop(server_conn):
+    socket_queue = Queue()
 
-    assert test_client.start() == None
+    assert server_conn.start(socket_queue).isAlive() == True
 
-def test_client_send_data():
-    test_client = client.Client(port=911)
+    server_conn.stop()
 
-    assert test_client.send_data("Hello?") == False
+def test_client_send_data(client_conn):
+    assert client_conn.send_data("Hello?") == False
 
-def test_client_stop():
-    test_client = client.Client(port=911)
-
+def test_client_stop(client_conn):
     with pytest.raises(Exception):
-        test_client.stop()
+        client_conn.stop()
