@@ -6,13 +6,13 @@ from queue import Queue
 def client_conn():
     from guiclient import client
 
-    return client.Client(port=911)
+    return client.Client(port=25565)
 
 @pytest.fixture
 def server_conn():
     from guiserver import server
 
-    return server.Server(port=911)
+    return server.Server(port=25565)
 
 def test_server_init(server_conn):
     assert not server_conn == None
@@ -27,15 +27,12 @@ def test_client_init(client_conn):
 def test_client_start(client_conn):
     assert client_conn.start() == None
 
-def test_server_start_stop():
-    from guiserver import server
-    
+def test_server_start_stop(server_conn):
     socket_queue = Queue()
-    test_server = server.Server(port=911)
 
-    assert test_server.start(socket_queue).isAlive() == True
+    assert server_conn.start(socket_queue).isAlive() == True
 
-    test_server.stop()
+    server_conn.stop()
 
 def test_client_send_data(client_conn):
     assert client_conn.send_data("Hello?") == False
