@@ -9,7 +9,7 @@ from tkinter import IntVar
 
 from client import Client
 
-client = Client(port=911)
+client = Client(port=25565)
 
 master = tk.Tk("Phantom - Client")
 
