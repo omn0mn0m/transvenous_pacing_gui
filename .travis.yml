@@ -4,12 +4,12 @@ python:
 
 # Set up dependencies
 install:
-  - pip install -r requirements.txt
+  - make install
 
 # Run coverage tests
 script:
-  - pytest --cov-config .coveragerc --cov=guiclient --cov=guiserver tests/
+  - make test
 
-# Print coverage report
+# Print coverage report to coveralls.io
 after_success:
   - coveralls
