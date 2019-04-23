@@ -54,14 +54,15 @@ last_x_lim = 0
 
 position_to_show = 0
 
+variation = 0
+
 def animate(i):
     global new_x
     global new_y
     global last_x
     global last_x_lim
     global position_to_show
-
-    variation = random.randint(0, 1)
+    global variation
     
     if override_position.get():
         [x, y] = ecg_signals.get_signal(position.get(), hr.get(), variation)
@@ -106,6 +107,7 @@ def animate(i):
         line.set_data(new_x, new_y)  # update the data
     
     if i == 29:
+        variation = random.randint(0, 1)
         last_x = new_x[-1]
         
     if new_x[-1] >= last_x_lim + 5:
@@ -218,8 +220,8 @@ variable.trace('w', change_dropdown)
 
 # ===== ECG Signal Setup
 ax = fig.add_subplot(111)
-ax.set_xlim(last_x_lim, 5)
-ax.set_ylim(-1, 1)
+ax.set_xlim(last_x_lim, 3)
+ax.set_ylim(-3.0, 3.0)
 ax.set_yticklabels([])
 ax.set_xticklabels([])
 ax.xaxis.set_tick_params(width=1, top=True)
