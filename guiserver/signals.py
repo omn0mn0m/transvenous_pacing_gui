@@ -27,11 +27,6 @@ class Signals():
         x = signal['x']
         y = signal['y']
 
-        # d = 60 / (rate * (xx[29]-xx[0]))
-        # new_first = xx[0] * d
-
-        # xx = [(w * d) - new_first for w in xx]
-
         y[-1] = y[0]
         time_beat = x[-1] - x[0]
         r = 1 / (rate/60)
