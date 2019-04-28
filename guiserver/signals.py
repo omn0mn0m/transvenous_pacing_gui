@@ -24,25 +24,25 @@ class Signals():
     def get_signal(self, location, rate, version=0):
         signal = self.ecg_signals[location][version]
 
-        x1 = signal['x']
-        y1 = signal['y']
+        x = signal['x']
+        y = signal['y']
 
-        y1[-1] = y1[0]
-        time_beat = x1[-1] - x1[0]
+        y[-1] = y[0]
+        time_beat = x[-1] - x[0]
         r = 1 / (rate/60)
 
         if r > time_beat:
-            x1.append(x1[0] + r)
-            x1 = [xx - x1[0] for xx in x1]
-            y1.append(y1[-1])
+            x.append(x[0] + r)
+            x = [xx - x[0] for xx in x]
+            y.append(y[-1])
         else:
-            length = x1[-1] - x1[0]
+            length = x[-1] - x[0]
             d = r / length
-            x1.append(x1[0])
-            x1 = [xx * d for xx in x1]
-            x1 = [xx - x1[0] for xx in x1]
+            x.append(x[0])
+            x = [xx * d for xx in x]
+            x = [xx - x1[0] for xx in x]
 
-        return x1, y1
+        return x, y
 
 if __name__ == "__main__":
     signals = Signals()
