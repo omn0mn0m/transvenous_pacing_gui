@@ -27,20 +27,21 @@ class Signals():
         x = signal['x'].copy()
         y = signal['y'].copy()
 
-        y[-1] = y[0]
-        time_beat = x[-1] - x[0]
-        r = 1 / (rate/60)
+        if not location == 'RIP':
+            y[-1] = y[0]
+            time_beat = x[-1] - x[0]
+            r = 1 / (rate/60)
 
-        if r > time_beat:
-            x.append(x[0] + r)
-            x = [xx - x[0] for xx in x]
-            y.append(y[-1])
-        else:
-            length = x[-1] - x[0]
-            d = r / length
-            x.append(x[0])
-            x = [xx * d for xx in x]
-            x = [xx - x[0] for xx in x]
+            if r > time_beat:
+                x.append(x[0] + r)
+                x = [xx - x[0] for xx in x]
+                y.append(y[-1])
+            else:
+                length = x[-1] - x[0]
+                d = r / length
+                x.append(x[0])
+                x = [xx * d for xx in x]
+                x = [xx - x[0] for xx in x]
 
         return x, y
 
