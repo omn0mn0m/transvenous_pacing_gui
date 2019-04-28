@@ -40,7 +40,7 @@ class Signals():
             d = r / length
             x.append(x[0])
             x = [xx * d for xx in x]
-            x = [xx - x1[0] for xx in x]
+            x = [xx - x[0] for xx in x]
 
         return x, y
 
