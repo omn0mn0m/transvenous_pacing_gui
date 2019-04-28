@@ -43,3 +43,10 @@ class Signals():
             x = [xx - x[0] for xx in x]
 
         return x, y
+
+if __name__ == "__main__":
+    signals = Signals()
+
+    print(signals.get_signal('SVC', 20))
+    print(signals.get_signal('SVC', 80))
+    print(signals.get_signal('SVC', 120))
