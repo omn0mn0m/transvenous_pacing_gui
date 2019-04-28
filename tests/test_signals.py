@@ -86,7 +86,7 @@ test_y_rip_140 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
 signals = Signals()
 
-def is_close_enough(list_1, list_2, tolerance=1e-2):
+def is_close_enough(list_1, list_2, tolerance=1e-4):
     similar = True
 
     for i in range(min(len(list_1), len(list_2))):
