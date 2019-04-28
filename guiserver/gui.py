@@ -30,13 +30,14 @@ server.start(socket_queue)
 ecg_signals = Signals()
 
 root = Tk.Tk()
+root.title("Phantom - Server")
 
 hr = IntVar(root, value=80)
 threshold = IntVar(root, value=20)
 
 position = StringVar(root, value='RIP')
 serial_position = IntVar(root, value='0')
-hr1=StringVar(root, value='0')
+hr1 = StringVar(root, value='0')
 
 override_position = BooleanVar(root, value=False)
 
@@ -57,15 +58,18 @@ position_to_show = 0
 variation = 0
 
 def animate(i):
-    global new_x
-    global new_y
-    global last_x
-    global last_x_lim
+    global new_x, new_y
+    global last_x, last_x_lim
     global position_to_show
     global variation
     
     if override_position.get():
         [x, y] = ecg_signals.get_signal(position.get(), hr.get(), variation)
+    
+        if position.get() == 0:
+            hr1.set(0)
+        else:
+            hr1.set(hr.get())
     else:
         position_index = serial_position.get()
 
@@ -78,11 +82,6 @@ def animate(i):
 
         print(ecg_signals.signal_index[position_index])
 
-        # if position_to_show <= position_index:
-        #     position_to_show = position_index
-
-        # [x, y] = ecg_signals.get_signal(ecg_signals.signal_index[position_to_show], hr.get())
-            
         if position_index == 0:
             if position_to_show == 1:
                 position_index = 0
@@ -150,7 +149,6 @@ def read_socket():
             hr.set(result[0])
             threshold.set(result[1])
             
-
             wait_for_update.set(False)
         elif wait_for_position.get():
             position.set(message.decode('utf-8'))
@@ -199,8 +197,8 @@ def read_serial():
             print('Error: {}'.format(e))
 
     root.after(10, read_serial)
+
 BPM="BPM "
-#hr2=str(hr1)
 whites="                                  "
 Tk.Label(root, text="Simulation ECG",font="Times 30 bold", bg="black",fg="lime green").grid(row=0, column=1)
 Tk.Label(root, textvariable=hr1,font='Times 24 bold',bg="black", fg="lime green").grid(row=0, column=3)
@@ -220,7 +218,7 @@ variable.trace('w', change_dropdown)
 
 # ===== ECG Signal Setup
 ax = fig.add_subplot(111)
-ax.set_xlim(last_x_lim, 3)
+ax.set_xlim(last_x_lim, 4)
 ax.set_ylim(-3.0, 3.0)
 ax.set_yticklabels([])
 ax.set_xticklabels([])
