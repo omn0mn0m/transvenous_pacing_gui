@@ -305,7 +305,7 @@ def test_PA_V1_140():
     assert is_close_enough(x, test_x_pa_140)
     assert is_close_enough(y, test_y_pa_140)
 
- def test_PA_V1_80():
+def test_PA_V1_80():
     [x,y] = signals.get_signal('PA', 80, 0)
 
     assert is_close_enough(x, test_x_pa)
