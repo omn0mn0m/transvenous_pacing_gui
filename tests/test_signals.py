@@ -98,12 +98,13 @@ def test_SVC_V1():
     [x,y] = signals.get_signal('SVC', 80, 0)
     [x1,y1]=signals.get_signal('SVC', 20, 0)
     [x2,y2]=signals.get_signal('SVC', 140, 0)
+    assert is_close_enough(x2, test_x_svc_140)
+    assert is_close_enough(y2, test_y_svc_140)
     assert is_close_enough(x, test_x_svc)
     assert is_close_enough(y, test_y_svc)
     assert is_close_enough(x1, test_x_svc_20)
     assert is_close_enough(y1, test_y_svc_20)
-    assert is_close_enough(x2, test_x_svc_140)
-    assert is_close_enough(y2, test_y_svc_140)
+   
     
 def test_SVC_V2():
     [x,y] = signals.get_signal('SVC', 80, 1)
