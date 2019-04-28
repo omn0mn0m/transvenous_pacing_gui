@@ -95,7 +95,7 @@ def is_close_enough(list_1, list_2, tolerance=1e-4):
     return similar
 
 def test_SVC_V1():
-     [x,y]=signals.get_signal('SVC', 20, 0)
+    [x,y]=signals.get_signal('SVC', 20, 0)
     assert is_close_enough(x, test_x_svc_20)
     assert is_close_enough(y, test_y_svc_20)
 
