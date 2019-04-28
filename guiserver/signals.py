@@ -27,22 +27,22 @@ class Signals():
         x = signal['x'].copy()
         y = signal['y'].copy()
 
-        y[-1] = y[0]
-        time_beat = x[-1] - x[0]
+        y1[-1] = y1[0]
+        time_beat = x1[-1] - x1[0]
         r = 1 / (rate/60)
 
         if r > time_beat:
-            x.append(x[0] + r)
-            x = [xx - x[0] for xx in x]
-            y.append(y[-1])
+            x1.append(x1[0] + r)
+            x1 = [xx - x1[0] for xx in x1]
+            y1.append(y1[-1])
         else:
-            length = x[-1] - x[0]
+            length = x1[-1] - x1[0]
             d = r / length
-            x.append(x[0])
-            x = [xx * d for xx in x]
-            x = [xx - x[0] for xx in x]
+            x1.append(x1[0])
+            x1 = [xx * d for xx in x1]
+            x1 = [xx - x1[0] for xx in x1]
 
-        return x, y
+        return x1, y1
 
 if __name__ == "__main__":
     signals = Signals()
