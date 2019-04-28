@@ -35,7 +35,7 @@ class Signals():
             x.append(x[0] + r)
             x = [xx - x[0] for xx in x]
             y.append(y[-1])
-        elif r < time_beat:
+        else:
             length = x[-1] - x[0]
             d = r / length
             x.append(x[0])
