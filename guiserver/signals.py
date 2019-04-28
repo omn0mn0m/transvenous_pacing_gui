@@ -24,8 +24,8 @@ class Signals():
     def get_signal(self, location, rate, version=0):
         signal = self.ecg_signals[location][version]
 
-        x = signal['x']
-        y = signal['y']
+        x = signal['x'].copy()
+        y = signal['y'].copy()
 
         y[-1] = y[0]
         time_beat = x[-1] - x[0]
@@ -49,4 +49,4 @@ if __name__ == "__main__":
 
     print(signals.get_signal('SVC', 20))
     print(signals.get_signal('SVC', 80))
-    print(signals.get_signal('SVC', 120))
+    print(signals.get_signal('SVC', 140))
