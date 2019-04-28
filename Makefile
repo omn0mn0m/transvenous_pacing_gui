@@ -4,4 +4,7 @@ install:
 test:
 	pytest --cov-config .coveragerc --cov=guiclient --cov=guiserver tests/
 
-.PHONY: init test
+complexity:
+	lizard
+
+.PHONY: init test complexity
