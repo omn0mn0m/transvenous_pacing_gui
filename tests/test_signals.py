@@ -145,101 +145,276 @@ def test_SVC_V1_140():
     assert is_close_enough(y, test_y_svc_140)
     
 def test_SVC_V1_80():
-    [x1,y1]=signals.get_signal('SVC', 80, 0)
-    assert is_close_enough(x1, test_x_svc)
-    assert is_close_enough(y1, test_y_svc)
+    [x,y]=signals.get_signal('SVC', 80, 0)
+    assert is_close_enough(x, test_x_svc)
+    assert is_close_enough(y, test_y_svc)
     
-def test_SVC_V2():
+def test_SVC_V2_20():
+    [x,y] = signals.get_signal('SVC', 20, 1)
+    assert is_close_enough(x, test_x_svc_2_20)
+    assert is_close_enough(y, test_y_svc_2_20)
+
+def test_SVC_V2_140():
+    [x,y] = signals.get_signal('SVC', 140, 1)
+    assert is_close_enough(x, test_x_svc_2_140)
+    assert is_close_enough(y, test_y_svc_2_140)
+
+def test_SVC_V2_80():
     [x,y] = signals.get_signal('SVC', 80, 1)
     assert is_close_enough(x, test_x_svc_2)
     assert is_close_enough(y, test_y_svc_2)
 
-def test_High_RA_V1():
-    [x,y] = signals.get_signal('HRA', 80, 0)
+def test_High_RA_V1_20():
+    [x,y] = signals.get_signal('HRA', 20, 0)
+    assert is_close_enough(x, test_x_hra_20)
+    assert is_close_enough(y, test_y_hra_20)
 
+def test_High_RA_V1_140():
+    [x,y] = signals.get_signal('HRA', 140, 0)
+    assert is_close_enough(x, test_x_hra_140)
+    assert is_close_enough(y, test_y_hra_140)
+    
+def test_High_RA_V1_80():
+    [x,y] = signals.get_signal('HRA', 80, 0)
     assert is_close_enough(x, test_x_hra)
     assert is_close_enough(y, test_y_hra)
+    
+def test_High_RA_V2_20():
+    [x,y] = signals.get_signal('HRA', 20, 1)
 
-def test_High_RA_V2():
+    assert is_close_enough(x, test_x_hra_2_20)
+    assert is_close_enough(y, test_y_hra_2_20)
+
+def test_High_RA_V2_140():
+    [x,y] = signals.get_signal('HRA', 140, 1)
+
+    assert is_close_enough(x, test_x_hra_2_140)
+    assert is_close_enough(y, test_y_hra_2_140)
+   
+def test_High_RA_V2_80():
     [x,y] = signals.get_signal('HRA', 80, 1)
 
     assert is_close_enough(x, test_x_hra_2)
     assert is_close_enough(y, test_y_hra_2)
+  
+def test_IVC_V1_20():
+    [x,y] = signals.get_signal('IVC', 20, 0)
 
-def test_IVC_V1():
+    assert is_close_enough(x, test_x_ivc_20)
+    assert is_close_enough(y, test_y_ivc_20)
+
+def test_IVC_V1_140():
+    [x,y] = signals.get_signal('IVC', 140, 0)
+
+    assert is_close_enough(x, test_x_ivc_140)
+    assert is_close_enough(y, test_y_ivc_140)
+    
+def test_IVC_V1_80():
     [x,y] = signals.get_signal('IVC', 80, 0)
 
     assert is_close_enough(x, test_x_ivc)
     assert is_close_enough(y, test_y_ivc)
+ 
+def test_IVC_V2_20():
+    [x,y] = signals.get_signal('IVC', 20, 1)
 
-def test_IVC_V2():
+    assert is_close_enough(x, test_x_ivc_2_20)
+    assert is_close_enough(y, test_y_ivc_2_20)
+
+def test_IVC_V2_140():
+    [x,y] = signals.get_signal('IVC', 140, 1)
+
+    assert is_close_enough(x, test_x_ivc_2_140)
+    assert is_close_enough(y, test_y_ivc_2_140)
+    
+def test_IVC_V2_80():
     [x,y] = signals.get_signal('IVC', 80, 1)
 
     assert is_close_enough(x, test_x_ivc_2)
     assert is_close_enough(y, test_y_ivc_2)
-
+    
 def test_Mid_RA_V1():
     [x,y] = signals.get_signal('MRA', 80, 0)
 
     assert is_close_enough(x, test_x_mra)
     assert is_close_enough(y, test_y_mra)
 
-def test_Mid_RA_V2():
+def test_Mid_RA_V1_20():
+    [x,y] = signals.get_signal('MRA', 20, 0)
+
+    assert is_close_enough(x, test_x_mra_20)
+    assert is_close_enough(y, test_y_mra_20)
+    
+def test_Mid_RA_V1_140():
+    [x,y] = signals.get_signal('MRA', 140, 0)
+
+    assert is_close_enough(x, test_x_mra_140)
+    assert is_close_enough(y, test_y_mra_140)
+
+def test_Mid_RA_V2_80():
     [x,y] = signals.get_signal('MRA', 80, 1)
 
     assert is_close_enough(x, test_x_mra_2)
     assert is_close_enough(y, test_y_mra_2)
 
-def test_Low_RA_V1():
+def test_Low_RA_V1_20():
+    [x,y] = signals.get_signal('LRA', 20, 0)
+
+    assert is_close_enough(x, test_x_lra_20)
+    assert is_close_enough(y, test_y_lra_20)
+
+def test_Low_RA_V1_140():
+    [x,y] = signals.get_signal('LRA', 140, 0)
+
+    assert is_close_enough(x, test_x_lra_140)
+    assert is_close_enough(y, test_y_lra_140)
+    
+def test_Low_RA_V1_80():
     [x,y] = signals.get_signal('LRA', 80, 0)
 
     assert is_close_enough(x, test_x_lra)
     assert is_close_enough(y, test_y_lra)
+    
+def test_Low_RA_V2_20():
+    [x,y] = signals.get_signal('LRA', 20, 1)
 
-def test_Low_RA_V2():
+    assert is_close_enough(x, test_x_lra_2_20)
+    assert is_close_enough(y, test_y_lra_2_20)
+
+def test_Low_RA_V2_140():
+    [x,y] = signals.get_signal('LRA', 140, 1)
+
+    assert is_close_enough(x, test_x_lra_2_140)
+    assert is_close_enough(y, test_y_lra_2_140)
+    
+def test_Low_RA_V2_80():
     [x,y] = signals.get_signal('LRA', 80, 1)
 
     assert is_close_enough(x, test_x_lra_2)
     assert is_close_enough(y, test_y_lra_2)
+    
+def test_PA_V1_20():
+    [x,y] = signals.get_signal('PA', 20, 0)
 
-def test_PA_V1():
+    assert is_close_enough(x, test_x_pa_20)
+    assert is_close_enough(y, test_y_pa_20)
+
+def test_PA_V1_140():
+    [x,y] = signals.get_signal('PA', 140, 0)
+
+    assert is_close_enough(x, test_x_pa_140)
+    assert is_close_enough(y, test_y_pa_140)
+
+ def test_PA_V1_80():
     [x,y] = signals.get_signal('PA', 80, 0)
 
     assert is_close_enough(x, test_x_pa)
     assert is_close_enough(y, test_y_pa)
 
-def test_PA_V2():
+def test_PA_V2_80():
     [x,y] = signals.get_signal('PA', 80, 1)
 
     assert is_close_enough(x, test_x_pa_2)
     assert is_close_enough(y, test_y_pa_2)
+    
+def test_PA_V2_20():
+    [x,y] = signals.get_signal('PA', 20, 1)
 
-def test_RV_V1():
+    assert is_close_enough(x, test_x_pa_2_20)
+    assert is_close_enough(y, test_y_pa_2_20)
+    
+def test_PA_V2_140():
+    [x,y] = signals.get_signal('PA', 140, 1)
+
+    assert is_close_enough(x, test_x_pa_2_140)
+    assert is_close_enough(y, test_y_pa_2_140)
+
+def test_RV_V1_80():
     [x,y] = signals.get_signal('RV', 80, 0)
 
     assert is_close_enough(x, test_x_rv)
     assert is_close_enough(y, test_y_rv)
+    
+def test_RV_V1_20():
+    [x,y] = signals.get_signal('RV', 20, 0)
 
-def test_RV_V2():
+    assert is_close_enough(x, test_x_rv_20)
+    assert is_close_enough(y, test_y_rv_20)
+    
+def test_RV_V1_140():
+    [x,y] = signals.get_signal('RV', 140, 0)
+
+    assert is_close_enough(x, test_x_rv_140)
+    assert is_close_enough(y, test_y_rv_140)
+    
+def test_RV_V2_80():
     [x,y] = signals.get_signal('RV', 80, 1)
 
     assert is_close_enough(x, test_x_rv_2)
     assert is_close_enough(y, test_y_rv_2)
+    
+def test_RV_V2_20():
+    [x,y] = signals.get_signal('RV', 20, 1)
 
-def test_RV_Wall_V1():
+    assert is_close_enough(x, test_x_rv_2_20)
+    assert is_close_enough(y, test_y_rv_2_20)
+    
+def test_RV_V2_140():
+    [x,y] = signals.get_signal('RV', 140, 1)
+
+    assert is_close_enough(x, test_x_rv_2_140)
+    assert is_close_enough(y, test_y_rv_2_140)
+    
+def test_RV_Wall_V1_80():
     [x,y] = signals.get_signal('RVW', 80, 0)
 
     assert is_close_enough(x, test_x_rvw)
     assert is_close_enough(y, test_y_rvw)
 
-def test_RV_Wall_V2():
+def test_RV_Wall_V1_20():
+    [x,y] = signals.get_signal('RVW', 20, 0)
+
+    assert is_close_enough(x, test_x_rvw_20)
+    assert is_close_enough(y, test_y_rvw_20)    
+    
+def test_RV_Wall_V1_140():
+    [x,y] = signals.get_signal('RVW', 140, 0)
+
+    assert is_close_enough(x, test_x_rvw_140)
+    assert is_close_enough(y, test_y_rvw_140) 
+    
+def test_RV_Wall_V2_80():
     [x,y] = signals.get_signal('RVW', 80, 1)
 
     assert is_close_enough(x, test_x_rvw_2)
     assert is_close_enough(y, test_y_rvw_2)
+    
+def test_RV_Wall_V2_20():
+    [x,y] = signals.get_signal('RVW', 20, 1)
 
-def test_Default_Line():
+    assert is_close_enough(x, test_x_rvw_2_20)
+    assert is_close_enough(y, test_y_rvw_2_20)
+    
+def test_RV_Wall_V2_140():
+    [x,y] = signals.get_signal('RVW', 140, 1)
+
+    assert is_close_enough(x, test_x_rvw_2_140)
+    assert is_close_enough(y, test_y_rvw_2_140)
+    
+def test_Default_Line_20():
+    [x,y] = signals.get_signal('RIP', 20, 0)
+
+    assert is_close_enough(x, test_x_rip)
+    assert is_close_enough(y, test_y_rip)
+    
+def test_Default_Line_80():
     [x,y] = signals.get_signal('RIP', 80, 0)
+
+    assert is_close_enough(x, test_x_rip)
+    assert is_close_enough(y, test_y_rip)
+    
+def test_Default_Line_140():
+    [x,y] = signals.get_signal('RIP', 140, 0)
 
     assert is_close_enough(x, test_x_rip)
     assert is_close_enough(y, test_y_rip)
