@@ -105,7 +105,7 @@ def animate(i):
 
         line.set_data(new_x, new_y)  # update the data
     
-    if i == 29:
+    if i == 30:
         variation = random.randint(0, 1)
         last_x = new_x[-1]
         
@@ -227,7 +227,7 @@ ax.set_facecolor('black')
 
 line, = ax.plot(0, 0)
 ax.get_lines()[0].set_color("xkcd:lime")
-ani = animation.FuncAnimation(fig, animate, frames=30, interval=24, repeat=True, blit=True)
+ani = animation.FuncAnimation(fig, animate, frames=31, interval=24, repeat=True, blit=True)
 
 # Polling Initialisation
 root.after(10, read_socket)
