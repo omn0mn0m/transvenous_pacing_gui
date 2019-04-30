@@ -4,13 +4,13 @@ from queue import Queue
 
 @pytest.fixture
 def client_conn():
-    from transvenous_pacing_gui.guiclient import client
+    from transvenous_pacing_gui import client
 
     return client.Client(port=25565)
 
 @pytest.fixture
 def server_conn():
-    from transvenous_pacing_gui.guiserver import server
+    from transvenous_pacing_gui import server
 
     return server.Server(port=25565)
 
@@ -38,5 +38,4 @@ def test_client_send_data(client_conn):
     assert client_conn.send_data("Hello?") == False
 
 def test_client_stop(client_conn):
-    with pytest.raises(Exception):
-        client_conn.stop()
+    assert client_conn.stop() == True
