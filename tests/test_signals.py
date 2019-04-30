@@ -1,4 +1,4 @@
-from guiserver.signals import Signals
+from transvenous_pacing_gui.signals import Signals
 from math import isclose
 
 import numpy as np

@@ -4,13 +4,13 @@ from queue import Queue
 
 @pytest.fixture
 def client_conn():
-    from guiclient import client
+    from transvenous_pacing_gui.guiclient import client
 
     return client.Client(port=25565)
 
 @pytest.fixture
 def server_conn():
-    from guiserver import server
+    from transvenous_pacing_gui.guiserver import server
 
     return server.Server(port=25565)
 

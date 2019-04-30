@@ -16,7 +16,7 @@ class Signals():
     }
 
     def __init__(self):
-        json_file = os.path.abspath('guiserver/signals.json')
+        json_file = os.path.abspath('res/signals.json')
 
         with open(json_file) as f:
             self.ecg_signals = json.load(f)

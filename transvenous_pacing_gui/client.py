@@ -19,8 +19,11 @@ class Client:
 
     def stop(self):
         stop_message = 'close'
-        self.client.send(stop_message.encode())
-        print("Closing connection with server...")
+        try:
+            self.client.send(stop_message.encode())
+            print("Closing connection with server...")
+        except Exception as e:
+            print(e)
 
         return True
 
