@@ -10,7 +10,7 @@ with open('LICENSE') as f:
 
 setup(
     name='transvenous_pacing_gui',
-    version='0.7.0',
+    version='0.7.1',
     description='Transvenous pacing procedure simulation GUI written in Python 3',
     long_description=readme,
     author='Nam Tran, Cooper Pearson, Richie Beck, Marcel Isper, Brianna Cathey',
