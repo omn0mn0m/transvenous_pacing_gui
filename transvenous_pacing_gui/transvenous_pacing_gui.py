@@ -9,16 +9,17 @@ class MainApplication(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
 
+        s = ttk.Style()
+        s.configure('new.TFrame', background='black')
+
         # GUI design
         notebook = ttk.Notebook(self.parent)
 
         # Student GUI design
-        self.student_gui = StudentGUI(notebook)
-        self.student_gui.configure(bg="black")
+        self.student_gui = StudentGUI(notebook, style='new.TFrame')
 
         # Teacher GUI design
         self.instructor_gui = InstructorGUI(notebook)
-        self.instructor_gui.configure(bg="black")
 
         # Building the notebook
         notebook.add(self.student_gui, text="Student")
@@ -28,9 +29,8 @@ class MainApplication(tk.Frame):
     def stop_gui(self):
         self.instructor_gui.stop_gui()
         self.student_gui.stop_gui()
-        
 
-if __name__ == "__main__":
+def main():
     root = tk.Tk()
     root.title("Tranvenous Pacing GUI")
 
@@ -40,3 +40,6 @@ if __name__ == "__main__":
     root.mainloop()
 
     main_app.stop_gui()
+
+if __name__ == "__main__":
+    main()
