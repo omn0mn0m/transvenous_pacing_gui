@@ -14,11 +14,9 @@ class MainApplication(tk.Frame):
 
         # Student GUI design
         self.student_gui = StudentGUI(notebook)
-        self.student_gui.configure(bg="black")
 
         # Teacher GUI design
         self.instructor_gui = InstructorGUI(notebook)
-        self.instructor_gui.configure(bg="black")
 
         # Building the notebook
         notebook.add(self.student_gui, text="Student")
