@@ -45,18 +45,6 @@ class InstructorGUI(tk.Frame):
         frame_right.pack(side=tk.RIGHT, padx=10, pady=10)
         Label(frame_right, text="Display Preview", font=self.header_1_style).pack()
 
-        # ============ Connection Space ===============
-        frame_connection = Frame(frame_left)
-        frame_connection.pack(pady=5)
-
-        Label(frame_connection, text="Hostname", font=self.default_style).pack(side=tk.LEFT)
-
-        entry_hostname = Entry(frame_connection, textvariable=self.host, font=self.default_style)
-        entry_hostname.pack(side=tk.LEFT)
-
-        btn_connect = Button(frame_connection, text="Connect", command=self.connect, fg="green", font=self.default_style)
-        btn_connect.pack(side=tk.LEFT)
-
         # ============ Position Selection ===============
         frame_position = Frame(frame_left)
         frame_position.pack(pady=5)
@@ -95,6 +83,22 @@ class InstructorGUI(tk.Frame):
 
         btn_reset_signal = Button(frame_command, text="Reset Signal (Asystole)", command=lambda: self.send_command('ressig'), fg="green", font=self.default_style)
         btn_reset_signal.pack(side=tk.LEFT)
+
+        # ============ Connection Space ===============
+        frame_connection = Frame(frame_mid)
+        frame_connection.pack(pady=5)
+
+        ip_label = "Device IP: {}".format(self.client.get_ip())
+
+        Label(frame_connection, text=ip_label, font=self.default_style).pack()
+
+        Label(frame_connection, text="Hostname", font=self.default_style).pack(side=tk.LEFT)
+
+        entry_hostname = Entry(frame_connection, textvariable=self.host, font=self.default_style)
+        entry_hostname.pack(side=tk.LEFT)
+
+        btn_connect = Button(frame_connection, text="Connect", command=self.connect, fg="green", font=self.default_style)
+        btn_connect.pack(side=tk.LEFT)
 
         # ============ Customisation Space ===============
         frame_signal = Frame(frame_mid)

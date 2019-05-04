@@ -33,6 +33,9 @@ class Client:
     def get_hostname(self):
         return self.host
 
+    def get_ip(self):
+        return socket.gethostbyname(self.host)
+
     def send_data(self, message):
         try:
             self.client.send(message.encode())
