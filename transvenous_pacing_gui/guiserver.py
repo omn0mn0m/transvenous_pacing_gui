@@ -208,8 +208,26 @@ class StudentGUI(tk.Frame):
                     self.wait_for_pathway_2.set(True)
                 elif message == b'close':
                     self.destroy()
+                elif message == b'cal':
+                    self.write_serial('C')
+                elif message == b'ressig':
+                    self.position_to_show = 0
             
         self.after(10, self.read_socket)
+
+    def pause_plot(self):
+        self.ani.event_source.stop()
+
+    def start_plot(self):
+        self.ani.event_source.start()
+
+    def write_serial(self, message):
+        if not self.ser == None:
+            try:
+                self.ser.write(message)
+                print(message)
+            except Exception as e:
+                print('Error: {}'.format(e))
 
     def read_serial(self):
         if not self.ser == None:

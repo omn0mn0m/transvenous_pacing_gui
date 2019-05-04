@@ -13,18 +13,33 @@ class MainApplication(tk.Frame):
         s.configure('new.TFrame', background='black')
 
         # GUI design
-        notebook = ttk.Notebook(self.parent)
+        self.notebook = ttk.Notebook(self.parent)
+        self.notebook.bind("<Button-1>", self.on_click)
 
         # Student GUI design
-        self.student_gui = StudentGUI(notebook, style='new.TFrame')
+        self.student_gui = StudentGUI(self.notebook, style='new.TFrame')
 
         # Teacher GUI design
-        self.instructor_gui = InstructorGUI(notebook)
+        self.instructor_gui = InstructorGUI(self.notebook)
 
         # Building the notebook
-        notebook.add(self.student_gui, text="Student")
-        notebook.add(self.instructor_gui, text="Instructor")
-        notebook.pack()
+        self.notebook.add(self.student_gui, text="Student")
+        self.notebook.add(self.instructor_gui, text="Instructor")
+        self.notebook.pack()
+
+    def on_click(self, event):
+        # Tcl function to determine tab at position
+        clicked_tab = self.notebook.tk.call(self.notebook._w, "identify", "tab", event.x, event.y)
+        active_tab = self.notebook.index(self.notebook.select())
+        
+        # If switching tabs
+        if not clicked_tab == active_tab:
+            if clicked_tab == 0:
+                self.student_gui.start_plot()
+            elif clicked_tab == 1:
+                self.student_gui.pause_plot()
+            else:
+                pass
 
     def stop_gui(self):
         self.instructor_gui.stop_gui()
