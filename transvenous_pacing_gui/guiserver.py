@@ -151,7 +151,7 @@ class StudentGUI(tk.Frame):
             self.line.set_data(self.new_x, self.new_y)  # update the data
         
         if i == 30:
-            variation = random.randint(0, 1)
+            self.variation = random.randint(0, 1)
             self.last_x = self.new_x[-1]
             
         if self.new_x[-1] >= self.last_x_lim + 5:
