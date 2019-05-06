@@ -2,7 +2,7 @@ install:
 	pip install -r requirements.txt
 
 test:
-	pytest --cov-config .coveragerc --cov=guiclient --cov=guiserver tests/
+	pytest --cov-config .coveragerc --cov=transvenous_pacing_gui tests/
 
 complexity:
 	lizard
