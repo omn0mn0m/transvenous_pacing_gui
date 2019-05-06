@@ -9,7 +9,7 @@ install:
 # Run coverage tests
 script:
   - make test
-  - make complexity
+#  - make complexity
 
 # Print coverage report to coveralls.io
 after_success:
