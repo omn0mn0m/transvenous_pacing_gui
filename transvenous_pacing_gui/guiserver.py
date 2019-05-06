@@ -72,6 +72,8 @@ class StudentGUI(tk.Frame):
         self.variation = 0
 
         self.flat_span = False
+        self.end_flat = 0
+        self.flat_span_y = 0
 
         Options=['']
         Options.extend(serial.tools.list_ports.comports())
@@ -165,16 +167,31 @@ class StudentGUI(tk.Frame):
 
                 self.line.set_data(self.new_x, self.new_y)  # update the data
             
-            if self.plot_point== 30:
+            if self.plot_point== 29:
                 self.variation = random.randint(0, 1)
                 self.last_x = self.new_x[-1]
+
+                self.end_flat = (x[-1] - x[-2]) + self.new_x[-1]
+                print(self.end_flat)
+                self.flat_span_y = y[-1]
+                self.flat_span = True
                 
-            if self.plot_point == 30:
+            if self.plot_point == 29:
                 self.plot_point = 0
             else:
                 self.plot_point = self.plot_point + 1
         else:
-            pass
+            print("Straight line time")
+            self.new_x.append(self.new_x[-1] + 0.05)
+            self.new_y.append(self.flat_span_y)
+
+            self.line.set_data(self.new_x, self.new_y)  # update the data
+
+            if self.new_x[-1] >= self.end_flat:
+                print(self.new_x[-1])
+                print("No more straight line")
+                self.flat_span = False
+                self.last_x = self.new_x[-1]
         
         if self.new_x[-1] >= self.last_x_lim + 5:
             self.last_x_lim += 5
