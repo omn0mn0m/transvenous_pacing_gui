@@ -11,6 +11,13 @@ from tkinter import IntVar
 from tkinter import Scale
 from tkinter import BooleanVar
 
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
+from signals import Signals
+
 from client import Client
 
 class InstructorGUI(tk.Frame):
@@ -165,6 +172,103 @@ class InstructorGUI(tk.Frame):
         for button_text, pathway_value in PATHWAYS_2:
             Radiobutton(frame_pathway, text=button_text, value=pathway_value, variable=self.pathway_2, font=self.default_style).pack()
 
+        # ======== Display Preview =========
+        self.ecg_signals = Signals()
+
+        self.new_x = [0.0]
+        self.new_y = [0.0]
+
+        self.last_x = 0
+        self.last_x_lim = 0
+
+        self.position_to_show = 0
+
+        self.variation = 0
+
+        self.flat_span = False
+        self.end_flat = 0
+        self.flat_span_y = 0
+        self.plot_point = 0
+
+        self.fig = plt.Figure(figsize=(10, 4.5), dpi=100,facecolor='k',edgecolor='k')
+        
+        canvas = FigureCanvasTkAgg(self.fig, master=frame_right)
+        canvas.get_tk_widget().pack()
+
+        self.ax = self.fig.add_subplot(111)
+        self.ax.set_xlim(self.last_x_lim, 4)
+        self.ax.set_ylim(-3.0, 3.0)
+        self.ax.set_yticklabels([])
+        self.ax.set_xticklabels([])
+        self.ax.xaxis.set_tick_params(width=1, top=True)
+        self.ax.set_facecolor('black')
+
+        self.line, = self.ax.plot(0, 0)
+        self.ax.get_lines()[0].set_color("xkcd:lime")
+
+        self.ani = animation.FuncAnimation(self.fig, self.animate, interval=24, blit=True)
+
+    def animate(self, i):
+        if self.is_pos_overriding.get():
+            # Set the position index value based on which source is responsible for the signal
+            position_index = self.position.get()
+
+            # Set initial heart rate to use
+            hr_to_use = self.hr.get()
+
+            # Adjust position and heart rate based on alternative pathways and pacer setting
+            if position_index == 4:
+                position_index = position_index + self.pathway_1.get()
+            elif position_index == 6:
+                position_index = position_index + self.pathway_2.get()
+
+                if not position_index == 16 and self.is_pacing.get():
+                    position_index = 26
+                    hr_to_use = self.hr_paced.get()
+            else:
+                position_index = position_index
+
+            # Print what position is being printed
+            print(self.ecg_signals.signal_index[position_index])
+
+            [x, y] = self.ecg_signals.get_signal(self.ecg_signals.signal_index[position_index], hr_to_use)
+
+            if not self.flat_span:
+                x_val = self.last_x + x[self.plot_point]
+
+                if x_val > self.new_x[-1]:
+                    self.new_x.append(x_val)
+                    self.new_y.append(y[self.plot_point])
+
+                    self.line.set_data(self.new_x, self.new_y)  # update the data
+                
+                if self.plot_point== 29:
+                    self.last_x = self.new_x[-1]
+
+                    self.end_flat = (x[-1] - x[-2]) + self.new_x[-1]
+                    self.flat_span_y = y[-1]
+                    self.flat_span = True
+                    
+                if self.plot_point == 29:
+                    self.plot_point = 0
+                else:
+                    self.plot_point = self.plot_point + 1
+            else:
+                self.new_x.append(self.new_x[-1] + 0.05)
+                self.new_y.append(self.flat_span_y)
+
+                self.line.set_data(self.new_x, self.new_y)  # update the data
+
+                if self.new_x[-1] >= self.end_flat:
+                    self.flat_span = False
+                    self.last_x = self.new_x[-1]
+            
+            if self.new_x[-1] >= self.last_x_lim + 5:
+                self.last_x_lim += 5
+                self.ax.set_xlim(self.last_x_lim, self.last_x_lim + 5)
+
+        return self.line,
+
     def connect(self):
         self.client.set_hostname(self.host.get())
         self.client.start()
@@ -183,9 +287,13 @@ class InstructorGUI(tk.Frame):
             self.client.send_data("start-pos")
             self.client.send_data("%d" % self.position.get())
             self.btn_pos_override.config(fg="red", text="Stop Override")
+
+            self.ani.event_source.start()
         else:
             self.client.send_data("stop-pos")
             self.btn_pos_override.config(fg="green", text="Start Override")
+
+            self.ani.event_source.stop()
 
     def toggle_pacing(self):
         self.is_pacing.set(not self.is_pacing.get())
