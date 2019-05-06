@@ -56,6 +56,8 @@ class StudentGUI(tk.Frame):
         self.pathway_2 = IntVar(self, value=0)
         self.is_paced = BooleanVar(self, value=False)
 
+        self.plot_point = 0
+
         # Take care of plotting
         fig = plt.Figure(figsize=(14, 4.5), dpi=100,facecolor='k',edgecolor='k')
 
@@ -69,7 +71,7 @@ class StudentGUI(tk.Frame):
 
         self.variation = 0
 
-        self.flat_span = 0
+        self.flat_span = False
 
         Options=['']
         Options.extend(serial.tools.list_ports.comports())
@@ -116,7 +118,7 @@ class StudentGUI(tk.Frame):
 
         self.line, = self.ax.plot(0, 0)
         self.ax.get_lines()[0].set_color("xkcd:lime")
-        self.ani = animation.FuncAnimation(fig, self.animate, frames=31, interval=24, repeat=True, blit=True)
+        self.ani = animation.FuncAnimation(fig, self.animate, interval=24, blit=True)
 
         # Polling Initialisation
         self.after(10, self.read_socket)
@@ -154,22 +156,30 @@ class StudentGUI(tk.Frame):
 
         [x, y] = self.ecg_signals.get_signal(self.ecg_signals.signal_index[position_index], hr_to_use, self.variation)
 
-        x_val = self.last_x + x[i]
+        if not self.flat_span:
+            x_val = self.last_x + x[self.plot_point]
 
-        if x_val > self.new_x[-1]:
-            self.new_x.append(x_val)
-            self.new_y.append(y[i])
+            if x_val > self.new_x[-1]:
+                self.new_x.append(x_val)
+                self.new_y.append(y[self.plot_point])
 
-            self.line.set_data(self.new_x, self.new_y)  # update the data
-        
-        if i == 30:
-            self.variation = random.randint(0, 1)
-            self.last_x = self.new_x[-1]
+                self.line.set_data(self.new_x, self.new_y)  # update the data
             
+            if self.plot_point== 30:
+                self.variation = random.randint(0, 1)
+                self.last_x = self.new_x[-1]
+                
+            if self.plot_point == 30:
+                self.plot_point = 0
+            else:
+                self.plot_point = self.plot_point + 1
+        else:
+            pass
+        
         if self.new_x[-1] >= self.last_x_lim + 5:
             self.last_x_lim += 5
             self.ax.set_xlim(self.last_x_lim, self.last_x_lim + 5)
-        
+
         return self.line,
 
     def change_dropdown(self, *args):

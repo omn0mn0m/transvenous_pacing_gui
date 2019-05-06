@@ -49,6 +49,11 @@ class Signals():
 if __name__ == "__main__":
     signals = Signals()
 
+    [x,y] = signals.get_signal('SVC', 20)
+    print(len(x))
+    print(x[-1])
+    print(x[-2])
+
     print(signals.get_signal('SVC', 20))
     print(signals.get_signal('SVC', 80))
     print(signals.get_signal('SVC', 140))
