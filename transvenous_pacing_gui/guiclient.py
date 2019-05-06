@@ -9,6 +9,7 @@ from tkinter import Radiobutton
 from tkinter import StringVar
 from tkinter import IntVar
 from tkinter import Scale
+from tkinter import BooleanVar
 
 from client import Client
 
@@ -26,11 +27,14 @@ class InstructorGUI(tk.Frame):
 
         # GUI Variables
         self.host = StringVar(self, value=self.client.get_hostname())
-        self.hr = StringVar(self, value=80)
+        self.hr = IntVar(self, value=80)
         self.threshold = StringVar(self, value=20)
-        self.position = StringVar(self, value='SVC')
+        self.hr_paced = IntVar(self, value=80)
+        self.position = IntVar(self, value=0)
         self.pathway_1 = IntVar(self, value=0)
         self.pathway_2 = IntVar(self, value=0)
+        self.is_pacing = BooleanVar(self, value=False)
+        self.is_pos_overriding = BooleanVar(self, value=False)
 
          # ============ Main Sides ===========
         frame_left = Frame(self, bd=1, relief=tk.SUNKEN)
@@ -50,27 +54,24 @@ class InstructorGUI(tk.Frame):
         frame_position.pack(pady=5)
 
         POSITIONS = [
-            ("Superior Vena Cava", "SVC"),
-            ("High Right Atrium", "HRA"),
-            ("Mid Right Atrium", "MRA"),
-            ("Low Right Atrium", "LRA"),
-            ("Inferior Vena Cava", "IVC"),
-            ("Right Ventricle", "RV"),
-            ("Right Ventricular Wall", "RVW"),
-            ("Pulmonary Artery", "PA"),
-            ("Asystole", "RIP"),
+            ("Superior Vena Cava", 1),
+            ("High Right Atrium", 2),
+            ("Mid Right Atrium", 3),
+            ("Low Right Atrium", 4),
+            ("Right Ventricle", 5),
+            ("Right Ventricular Wall", 6),
+            ("Asystole", 0),
         ]
+
+        self.position.trace('w', self.callback_manual_pos)
 
         Label(frame_position, text="Show Manual Position", font=self.default_style).pack()
 
         for button_text, position_value in POSITIONS:
             Radiobutton(frame_position, text=button_text, value=position_value, variable=self.position, font=self.default_style).pack()
 
-        btn_send_position = Button(frame_position, text="Start Override", command=self.send_position, fg="green", font=self.default_style)
-        btn_send_position.pack(side=tk.LEFT)
-
-        btn_stop_position = Button(frame_position, text="Stop Override", command=self.stop_position, fg="red", font=self.default_style)
-        btn_stop_position.pack(side=tk.RIGHT)
+        self.btn_pos_override = Button(frame_position, text="Start Override", command=self.toggle_pos_override, fg="green", font=self.default_style)
+        self.btn_pos_override.pack()
 
         # ============ Command Sends =============
         frame_command = Frame(frame_left)
@@ -106,7 +107,7 @@ class InstructorGUI(tk.Frame):
 
         Label(frame_signal, text="Heart Rate", font=self.default_style).grid(row=0, column=0)
 
-        scale_hr = Scale(frame_signal, from_=0, to=200, length=150, variable=self.hr, orient=tk.HORIZONTAL)
+        scale_hr = Scale(frame_signal, from_=0, to=100, length=150, variable=self.hr, orient=tk.HORIZONTAL)
         scale_hr.grid(row=0, column=1)
 
         entry_hr = Entry(frame_signal, textvariable=self.hr, font=self.default_style, width=4)
@@ -114,14 +115,28 @@ class InstructorGUI(tk.Frame):
 
         Label(frame_signal, text="Pacing Threshold", font=self.default_style).grid(row=1, column=0)
 
-        scale_threshold = Scale(frame_signal, from_=0, to=200, length=150, variable=self.threshold, orient=tk.HORIZONTAL)
+        scale_threshold = Scale(frame_signal, from_=0, to=50, length=150, variable=self.threshold, orient=tk.HORIZONTAL)
         scale_threshold.grid(row=1, column=1)
 
         entry_threshold = Entry(frame_signal, textvariable=self.threshold, font=self.default_style, width=4)
         entry_threshold.grid(row=1, column=2)
 
-        btn_send_customisations = Button(frame_signal, text="Update ECG Settings", command=self.send_customisations, fg="green", font=self.default_style, pady=5)
-        btn_send_customisations.grid(row=2, columnspan=3)
+        Label(frame_signal, text="Paced Heart Rate", font=self.default_style).grid(row=2, column=0)
+
+        scale_hr_paced = Scale(frame_signal, from_=0, to=100, length=150, variable=self.hr_paced, orient=tk.HORIZONTAL)
+        scale_hr_paced.grid(row=2, column=1)
+
+        entry_hr_paced = Entry(frame_signal, textvariable=self.hr_paced, font=self.default_style, width=4)
+        entry_hr_paced.grid(row=2, column=2)
+
+        frame_signal_buttons = Frame(frame_signal)
+        frame_signal_buttons.grid(row=3, columnspan=3)
+
+        btn_send_customisations = Button(frame_signal_buttons, text="Update ECG", command=self.send_customisations, fg="green", font=self.default_style, pady=5)
+        btn_send_customisations.pack(side=tk.LEFT, fill=tk.X)
+
+        self.btn_pacing = Button(frame_signal_buttons, text="Start Pacing", command=self.toggle_pacing, fg="green", font=self.default_style, pady=5)
+        self.btn_pacing.pack(side=tk.RIGHT, fill=tk.X)
 
         # ========== Pathway Selection ==============
         frame_pathway = Frame(frame_mid)
@@ -159,15 +174,30 @@ class InstructorGUI(tk.Frame):
 
     def send_customisations(self):
         self.client.send_data("update")
-        self.client.send_data("{},{}".format(self.hr.get(), self.threshold.get()))
+        self.client.send_data("{},{},{}".format(self.hr.get(), self.threshold.get(), self.hr_paced.get()))
 
-    def send_position(self):
-        self.client.send_data("start-pos")
-        self.client.send_data(self.position.get())
+    def toggle_pos_override(self):
+        self.is_pos_overriding.set(not self.is_pos_overriding.get())
 
-    def stop_position(self):
-        self.client.send_data("stop-pos")
+        if self.is_pos_overriding.get():
+            self.client.send_data("start-pos")
+            self.client.send_data("%d" % self.position.get())
+            self.btn_pos_override.config(fg="red", text="Stop Override")
+        else:
+            self.client.send_data("stop-pos")
+            self.btn_pos_override.config(fg="green", text="Start Override")
 
+    def toggle_pacing(self):
+        self.is_pacing.set(not self.is_pacing.get())
+
+        if self.is_pacing.get():
+            self.client.send_data("start-pace")
+            self.send_customisations()
+            self.btn_pacing.config(fg="red", text="Stop Pacing")
+        else:
+            self.client.send_data("stop-pace")
+            self.btn_pacing.config(fg="green", text="Start Pacing")
+            
     def callback_pathway_1(self, *args):
         self.client.send_data("chpa1")
         self.client.send_data("%d" % self.pathway_1.get())
@@ -175,6 +205,11 @@ class InstructorGUI(tk.Frame):
     def callback_pathway_2(self, *args):
         self.client.send_data("chpa2")
         self.client.send_data("%d" % self.pathway_2.get())
+    
+    def callback_manual_pos(self, *args):
+        if self.is_pos_overriding.get():
+            self.client.send_data("manual-pos")
+            self.client.send_data("%d" % self.position.get())
     
     def stop_gui(self):
         self.client.stop()

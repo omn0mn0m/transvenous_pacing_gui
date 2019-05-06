@@ -39,8 +39,9 @@ class StudentGUI(tk.Frame):
 
         self.hr = IntVar(self, value=80)
         self.threshold = IntVar(self, value=20)
+        self.hr_paced = IntVar(self, value=80)
 
-        self.position = StringVar(self, value='RIP')
+        self.position = IntVar(self, value=0)
         self.serial_position = IntVar(self, value='0')
         self.hr1 = StringVar(self, value='0')
 
@@ -48,6 +49,7 @@ class StudentGUI(tk.Frame):
 
         self.pathway_1 = IntVar(self, value=0)
         self.pathway_2 = IntVar(self, value=0)
+        self.is_paced = BooleanVar(self, value=False)
 
         # Take care of plotting
         fig = plt.Figure(figsize=(14, 4.5), dpi=100,facecolor='k',edgecolor='k')
@@ -74,8 +76,6 @@ class StudentGUI(tk.Frame):
         self.s = 'RIP'
         self.ser = None
 
-        BPM="BPM "
-        whites="                                  "
         tk.Label(self, text="Simulation ECG",font="Times 30 bold", bg="black",fg="lime green").grid(row=0, column=1)
         tk.Label(self, textvariable=self.hr1,font='Times 24 bold',bg="black", fg="lime green").grid(row=0, column=3)
         tk.Label(self, text="BPM", font='Times 24 bold', bg="black", fg="lime green").grid(row=0, column=2)
@@ -109,38 +109,31 @@ class StudentGUI(tk.Frame):
 
     def animate(self, i):
         if self.override_position.get():
-            [x, y] = self.ecg_signals.get_signal(self.position.get(), self.hr.get(), self.variation)
-        
-            if self.position.get() == 0:
-                self.hr1.set(0)
-            else:
-                self.hr1.set(self.hr.get())
+            position_index = self.position.get()
         else:
             position_index = self.serial_position.get()
 
-            if position_index == 4:
-                position_index = position_index + self.pathway_1.get()
-            elif position_index == 6:
-                position_index = position_index + self.pathway_2.get()
-            else:
-                position_index = position_index
+        hr_to_use = self.hr.get()
 
-            print(self.ecg_signals.signal_index[position_index])
+        if position_index == 4:
+            position_index = position_index + self.pathway_1.get()
+        elif position_index == 6:
+            position_index = position_index + self.pathway_2.get()
 
-            if position_index == 0:
-                if self.position_to_show == 1:
-                    position_index = 0
-                else:
-                    position_index = self.position_to_show
-            else:
-                self.position_to_show = position_index
+            if not position_index == 16 and self.is_paced.get():
+                position_index = 26
+                hr_to_use = self.hr_paced.get()
+        else:
+            position_index = position_index
 
-            if position_index == 0:
-                self.hr1.set(0)
-            else:
-                self.hr1.set(self.hr.get())
+        print(self.ecg_signals.signal_index[position_index])
 
-            [x, y] = self.ecg_signals.get_signal(self.ecg_signals.signal_index[position_index], self.hr.get(), self.variation)
+        if self.position.get() == 0:
+            self.hr1.set(0)
+        else:
+            self.hr1.set(hr_to_use)
+
+        [x, y] = self.ecg_signals.get_signal(self.ecg_signals.signal_index[position_index], hr_to_use, self.variation)
 
         x_val = self.last_x + x[i]
 
@@ -181,10 +174,11 @@ class StudentGUI(tk.Frame):
 
                 self.hr.set(result[0])
                 self.threshold.set(result[1])
+                self.hr_paced.set(result[2])
                 
                 self.wait_for_update.set(False)
             elif self.wait_for_position.get():
-                self.position.set(message.decode('utf-8'))
+                self.position.set(int(message.decode('utf-8')))
                 self.wait_for_position.set(False)
                 self.override_position.set(True)
             elif self.wait_for_pathway_1.get():
@@ -202,12 +196,18 @@ class StudentGUI(tk.Frame):
                     self.wait_for_position.set(True)
                 elif message == b'stop-pos':
                     self.override_position.set(False)
+                elif message == b'manual-pos':
+                    self.wait_for_position.set(True)
                 elif message == b'chpa1':
                     self.wait_for_pathway_1.set(True)
                 elif message == b'chpa2':
                     self.wait_for_pathway_2.set(True)
                 elif message == b'close':
                     self.destroy()
+                elif message == b'start-pace':
+                    self.is_paced.set(True)
+                elif message == b'stop-pace':
+                    self.is_paced.set(False)
                 elif message == b'cal':
                     self.write_serial('C')
                 elif message == b'ressig':

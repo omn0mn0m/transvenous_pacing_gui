@@ -12,7 +12,8 @@ class Signals():
         5: 'RV',
         6: 'RVW',
         14: 'IVC',
-        16: 'PA'
+        16: 'PA',
+        26: 'RVW_PACED'
     }
 
     def __init__(self):
