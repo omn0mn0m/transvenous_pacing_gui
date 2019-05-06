@@ -36,7 +36,7 @@ class InstructorGUI(tk.Frame):
         self.is_pacing = BooleanVar(self, value=False)
         self.is_pos_overriding = BooleanVar(self, value=False)
 
-         # ============ Main Sides ===========
+        # ============ Main Sides ===========
         frame_left = Frame(self, bd=1, relief=tk.SUNKEN)
         frame_left.pack(side=tk.LEFT, padx=10, pady=10)
         Label(frame_left, text="Override Settings", font=self.header_1_style).pack()

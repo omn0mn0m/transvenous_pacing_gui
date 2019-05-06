@@ -4,6 +4,7 @@ from tkinter import ttk
 
 from tkinter import BooleanVar
 from tkinter import IntVar
+from tkinter import Frame
 from tkinter import StringVar
 from tkinter import OptionMenu
 
@@ -25,6 +26,10 @@ from server import Server
 from queue import Queue
 
 class StudentGUI(tk.Frame):
+    # Settings
+    header_1_style = "TkDefaultFont 42 bold"
+    header_2_style = "TkDefaultFont 18 bold"
+    default_style  = "TkDefaultFont 14"
 
     def __init__(self, parent, *args, **kwargs):
         ttk.Frame.__init__(self, parent, *args, **kwargs)
@@ -64,6 +69,8 @@ class StudentGUI(tk.Frame):
 
         self.variation = 0
 
+        self.flat_span = 0
+
         Options=['']
         Options.extend(serial.tools.list_ports.comports())
 
@@ -76,17 +83,24 @@ class StudentGUI(tk.Frame):
         self.s = 'RIP'
         self.ser = None
 
-        tk.Label(self, text="Simulation ECG",font="Times 30 bold", bg="black",fg="lime green").grid(row=0, column=1)
-        tk.Label(self, textvariable=self.hr1,font='Times 24 bold',bg="black", fg="lime green").grid(row=0, column=3)
-        tk.Label(self, text="BPM", font='Times 24 bold', bg="black", fg="lime green").grid(row=0, column=2)
+        # Main Grid Frames
+        frame_signals = Frame(self, bg='black')
+        frame_signals.pack(side=tk.LEFT)
 
-        canvas = FigureCanvasTkAgg(fig, master=self)
+        frame_values = Frame(self, bg='black')
+        frame_values.pack(side=tk.RIGHT, padx=10)
+
+        # Rest of setup
+        tk.Label(frame_values, text="HR", font=self.header_2_style, bg="black", fg="lime green").pack()
+        tk.Label(frame_values, textvariable=self.hr1,font=self.header_1_style,bg="black", fg="lime green").pack()
+        
+        canvas = FigureCanvasTkAgg(fig, master=frame_signals)
         canvas.get_tk_widget().grid(row=1, column=1)
 
         self.variable = StringVar(self)
         self.variable.set(Options[0]) #Default option
 
-        w=OptionMenu(self, self.variable, *Options)
+        w=OptionMenu(frame_signals, self.variable, *Options)
         w.grid(row=2, column=1)
 
         self.variable.trace('w', self.change_dropdown)
@@ -108,13 +122,16 @@ class StudentGUI(tk.Frame):
         self.after(10, self.read_socket)
 
     def animate(self, i):
+        # Set the position index value based on which source is responsible for the signal
         if self.override_position.get():
             position_index = self.position.get()
         else:
             position_index = self.serial_position.get()
 
+        # Set initial heart rate to use
         hr_to_use = self.hr.get()
 
+        # Adjust position and heart rate based on alternative pathways and pacer setting
         if position_index == 4:
             position_index = position_index + self.pathway_1.get()
         elif position_index == 6:
@@ -126,9 +143,11 @@ class StudentGUI(tk.Frame):
         else:
             position_index = position_index
 
+        # Print what position is being printed
         print(self.ecg_signals.signal_index[position_index])
 
-        if self.position.get() == 0:
+        # Display heart rate value on GUI
+        if position_index == 0:
             self.hr1.set(0)
         else:
             self.hr1.set(hr_to_use)
