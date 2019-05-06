@@ -172,7 +172,6 @@ class StudentGUI(tk.Frame):
                 self.last_x = self.new_x[-1]
 
                 self.end_flat = (x[-1] - x[-2]) + self.new_x[-1]
-                print(self.end_flat)
                 self.flat_span_y = y[-1]
                 self.flat_span = True
                 
@@ -181,15 +180,12 @@ class StudentGUI(tk.Frame):
             else:
                 self.plot_point = self.plot_point + 1
         else:
-            print("Straight line time")
             self.new_x.append(self.new_x[-1] + 0.05)
             self.new_y.append(self.flat_span_y)
 
             self.line.set_data(self.new_x, self.new_y)  # update the data
 
             if self.new_x[-1] >= self.end_flat:
-                print(self.new_x[-1])
-                print("No more straight line")
                 self.flat_span = False
                 self.last_x = self.new_x[-1]
         
@@ -255,7 +251,7 @@ class StudentGUI(tk.Frame):
                 elif message == b'stop-pace':
                     self.is_paced.set(False)
                 elif message == b'cal':
-                    self.write_serial('C')
+                    self.write_serial(b'C')
                 elif message == b'ressig':
                     self.position_to_show = 0
             
