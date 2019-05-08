@@ -1,8 +1,6 @@
 [run]
 omit = 
-    */transvenous_pacing_gui.py
-    */guiserver.py
-    */guiclient.py
+    */gui*
 
 [report]
 exclude_lines =
