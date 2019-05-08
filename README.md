@@ -31,4 +31,4 @@ The following software MUST be installed to use this project:
 ## Setup
 To begin contributing to this project, download this project using either the [Download Zip](https://github.com/omn0mn0m/transvenous_pacing_gui/archive/master.zip) link or cloning the repository on GitHub.
 
-All dependencies can be installed by running `pip install -r requirements.txt`. The code can be edited in whatever you'd like.
+All dependencies can be installed by running `pip install -r requirements.txt` from within the project directory. The code can be edited in whatever you'd like.
