@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 
 class Signals():
 
@@ -17,7 +18,7 @@ class Signals():
     }
 
     def __init__(self):
-        json_file = os.path.abspath('res/signals.json')
+        json_file = os.path.abspath('{}/../signals.json'.format(__file__))
 
         with open(json_file) as f:
             self.ecg_signals = json.load(f)

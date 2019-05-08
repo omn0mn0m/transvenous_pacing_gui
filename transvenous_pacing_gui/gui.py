@@ -1,8 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
 
-from guiclient import InstructorGUI
-from guiserver import StudentGUI
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from transvenous_pacing_gui.guiclient import InstructorGUI
+from transvenous_pacing_gui.guiserver import StudentGUI
 
 class MainApplication(tk.Frame):
     def __init__(self, parent, *args, **kwargs):

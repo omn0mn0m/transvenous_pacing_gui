@@ -20,8 +20,8 @@ from serial import SerialException
 import serial.tools.list_ports
 
 # Project Modules
-from signals import Signals
-from server import Server
+from transvenous_pacing_gui.signals import Signals
+from transvenous_pacing_gui.server import Server
 
 from queue import Queue
 

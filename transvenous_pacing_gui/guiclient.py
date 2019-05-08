@@ -16,9 +16,9 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
-from signals import Signals
+from transvenous_pacing_gui.signals import Signals
 
-from client import Client
+from transvenous_pacing_gui.client import Client
 
 class InstructorGUI(tk.Frame):
     # Settings
