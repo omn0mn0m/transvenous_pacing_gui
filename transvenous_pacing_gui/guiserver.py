@@ -1,3 +1,11 @@
+"""
+.. module:: guiclient
+    :platform: Windows
+    :synopsis: Instructor GUI tkinter frame
+ 
+.. moduleauthor:: Nam Tran, Richie Beck, Cooper Pearson
+"""
+
 # Pip Modules
 import tkinter as tk
 from tkinter import ttk

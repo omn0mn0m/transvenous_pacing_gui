@@ -4,15 +4,18 @@ from setuptools import setup, find_packages
 
 import transvenous_pacing_gui
 
+# Uses GitHub readme for the pypi readme
 with open('README.md') as f:
     readme = f.read()
 
+# Required libraries for script execution
 requirements = [
     'matplotlib',
     'pyserial',
     'numpy'
 ]
 
+# Main setup
 setup(
     name='transvenous_pacing_gui',
     version='0.8.0',
