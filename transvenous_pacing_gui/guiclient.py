@@ -33,7 +33,7 @@ class InstructorGUI(tk.Frame):
     """Instructor GUI frame to be used in the main GUI
  
     This class contains multiple input widgets for the GUI,
-    as well as a the Client class used to connect with the
+    as well as the Client class used to connect with the
     socket server.
     """
 
@@ -223,6 +223,7 @@ class InstructorGUI(tk.Frame):
             Radiobutton(frame_pathway, text=button_text, value=pathway_value, variable=self.pathway_2, font=self.default_style).pack()
 
         # ======== Display Preview =========
+        # Instantiated signals class to generate signals
         self.ecg_signals = Signals()
 
         self.new_x = [0.0]
@@ -293,9 +294,6 @@ class InstructorGUI(tk.Frame):
                 # If no overrides or special settings, just keep the position the same
                 position_index = position_index
 
-            # Print what position is being printed
-            print(self.ecg_signals.signal_index[position_index])
-
             # Get the ECG signal values for the corresponding settings
             [x, y] = self.ecg_signals.get_signal(self.ecg_signals.signal_index[position_index], hr_to_use)
 
@@ -354,8 +352,7 @@ class InstructorGUI(tk.Frame):
         return self.line,
 
     def connect(self):
-        """Connects the instructor GUI to the student GUI
-        """
+        """Connects the instructor GUI to the student GUI"""
 
         # Update the hostname
         self.client.set_hostname(self.host.get())
@@ -372,8 +369,7 @@ class InstructorGUI(tk.Frame):
         self.client.send_data(message)
 
     def send_customisations(self):
-        """Sends updated customisation data from instructor GUI to the student GUI
-        """
+        """Sends updated customisation data from instructor GUI to the student GUI"""
 
         # Command code
         self.client.send_data("update")
@@ -381,8 +377,7 @@ class InstructorGUI(tk.Frame):
         self.client.send_data("{},{},{}".format(self.hr.get(), self.threshold.get(), self.hr_paced.get()))
 
     def toggle_pos_override(self):
-        """Sends position override data from the instructor to the student GUI
-        """
+        """Sends position override data from the instructor to the student GUI"""
 
         # Toggle if we are overriding
         self.is_pos_overriding.set(not self.is_pos_overriding.get())
@@ -407,28 +402,69 @@ class InstructorGUI(tk.Frame):
             self.ani.event_source.stop()
 
     def toggle_pacing(self):
+        """Toggles whether to be pacing"""
+
+        # Toggles if we are pacing
         self.is_pacing.set(not self.is_pacing.get())
 
+        # If we are now pacing
         if self.is_pacing.get():
+            # Start pacing command code
             self.client.send_data("start-pace")
+            # Send customisation network update
             self.send_customisations()
+            # Switch the toggle button
             self.btn_pacing.config(fg="red", text="Stop Pacing")
         else:
+            # Stop pacing command code
             self.client.send_data("stop-pace")
+            # Switch the toggle button
             self.btn_pacing.config(fg="green", text="Start Pacing")
             
     def callback_pathway_1(self, *args):
+        """Callback function for when the pathway is switched.
+
+        This will automatically send an updated pathway.
+ 
+        Args:
+            *args: Variable length argument list
+        """
+
+        # Command code
         self.client.send_data("chpa1")
+        # Data
         self.client.send_data("%d" % self.pathway_1.get())
 
     def callback_pathway_2(self, *args):
+        """Callback function for when the pathway is switched.
+
+        This will automatically send an updated pathway.
+ 
+        Args:
+            *args: Variable length argument list
+        """
+        
+        # Command code
         self.client.send_data("chpa2")
+        # Data
         self.client.send_data("%d" % self.pathway_2.get())
     
     def callback_manual_pos(self, *args):
+        """Callback function for when the pathway is switched.
+
+        This will automatically send an updated pathway.
+ 
+        Args:
+            *args: Variable length argument list
+        """
+        
+        # If we are actively overriding
         if self.is_pos_overriding.get():
+            # Command code
             self.client.send_data("manual-pos")
+            # Data
             self.client.send_data("%d" % self.position.get())
     
     def stop_gui(self):
+        """Stops the instructor GUI client"""
         self.client.stop()

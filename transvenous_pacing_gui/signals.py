@@ -1,8 +1,14 @@
+# Standard Library imports
 import json
 import os
 import sys
 
 class Signals():
+    """ECG signal lookup class with signal manipulation
+ 
+    This class provides basic functionality to connect to its partner TCP/IP
+    socket server.
+    """
 
     signal_index = {
         0: 'RIP',
@@ -47,14 +53,18 @@ class Signals():
 
         return x, y
 
+# Code to run if the script is called by itself - for debugging
 if __name__ == "__main__":
+    # Class instantiation
     signals = Signals()
 
+    # Test with SVC at 20 BPM
     [x,y] = signals.get_signal('SVC', 20)
     print(len(x))
     print(x[-1])
     print(x[-2])
 
+    # Test with SVC at various BPM
     print(signals.get_signal('SVC', 20))
     print(signals.get_signal('SVC', 80))
     print(signals.get_signal('SVC', 140))
